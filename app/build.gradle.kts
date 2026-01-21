@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+
+//    kotlin("plugin.serialization") version "2.0.21"
+//    id("com.google.devtools.ksp")
+//    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -46,6 +50,36 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+    //fonts
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.10.1")
+
+    //lucide (icon)
+    implementation("com.composables:icons-lucide-android:1.0.0")
+
+    //compose navigation
+    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+
+    //retrofit (HTTP connection)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
+    //coil (load image)
+    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.2.0")
+
+    //datastore (store auth token)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //hilt (dependency injection)
+//    implementation("com.google.dagger:hilt-android:2.59")
+//    ksp("com.google.dagger:hilt-compiler:2.59")
+//    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
