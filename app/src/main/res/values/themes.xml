@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.SafeRecycle" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SafeRecycle" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/white</item>
+        <item name="android:windowSplashScreenAnimationDuration">@integer/material_motion_duration_short_1</item>
+    </style>
+
 </resources>
