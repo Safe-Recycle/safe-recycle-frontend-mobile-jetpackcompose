@@ -82,12 +82,12 @@ fun ListTitle(text: String, onClick: () -> Unit) {
 
 @Composable
 fun CategorySection(
-    onClickSeeAll: () -> Unit,
-    onClickCategory: (Int) -> Unit,
+    onCategoriesClick: () -> Unit,
+    onCategoryClick: (String, Int) -> Unit,
     categories: List<Category>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
-        ListTitle(text = "Waste Category", onClick = onClickSeeAll)
+        ListTitle(text = "Waste Category", onClick = onCategoriesClick)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = /*Arrangement.SpaceBetween*/ spacedBy(17.dp)
@@ -95,7 +95,8 @@ fun CategorySection(
             categories.take(4).forEach { category ->
                 CategoryCard(
                     category = category,
-                    onClick = { onClickCategory(category.id) })
+                    onClick = { onCategoryClick(category.name, category.id) }
+                )
             }
         }
     }
@@ -103,18 +104,18 @@ fun CategorySection(
 
 @Composable
 fun SuggestedSection(
-    onClickSeeAll: () -> Unit,
-    onClickWaste: (Int) -> Unit,
+    onSuggestedClick: () -> Unit,
+    onWasteClick: (Int) -> Unit,
     suggestedWaste: List<Waste>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
-        ListTitle(text = "Suggested for You", onClick = onClickSeeAll)
+        ListTitle(text = "Suggested for You", onClick = onSuggestedClick)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
         ) {
             suggestedWaste.take(2).forEach { waste ->
-                WasteCard(waste = waste, onClick = { onClickWaste(waste.id) })
+                WasteCard(waste = waste, onClick = { onWasteClick(waste.id) })
             }
         }
     }
@@ -122,19 +123,19 @@ fun SuggestedSection(
 
 @Composable
 fun PopularSection(
-    onClickSeeAll: () -> Unit,
-    onClickWaste: (Int) -> Unit,
+    onPopularClick: () -> Unit,
+    onWasteClick: (Int) -> Unit,
     popularWaste: List<Waste>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
-        ListTitle(text = "Popular Waste", onClick = onClickSeeAll)
+        ListTitle(text = "Popular Waste", onClick = onPopularClick)
         popularWaste.chunked(2).take(2).forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
             ) {
                 rowItems.forEach { waste ->
-                    WasteCard(waste, onClick = { onClickWaste(waste.id) })
+                    WasteCard(waste, onClick = { onWasteClick(waste.id) })
                 }
             }
         }

@@ -14,7 +14,10 @@ import com.example.saferecycle.ui.component.CategoryCard
 import com.example.saferecycle.ui.component.TopBar
 
 @Composable
-fun CategoryScreen(onBackClick: () -> Unit) {
+fun CategoryScreen(
+    onNavigateToCategoryWasteList: (String, Int) -> Unit,
+    onBackClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopBar(
@@ -29,10 +32,18 @@ fun CategoryScreen(onBackClick: () -> Unit) {
                 .padding(16.dp),
             columns = GridCells.Adaptive(minSize = 75.dp),
             horizontalArrangement = spacedBy(17.dp),
-            verticalArrangement = spacedBy(17.dp)
+            verticalArrangement = spacedBy(31.dp)
         ) {
             items(dummyCategories) { category ->
-                CategoryCard(category = category, onClick = {})
+                CategoryCard(
+                    category = category,
+                    onClick = {
+                        onNavigateToCategoryWasteList(
+                            "${category.name} Category",
+                            category.id
+                        )
+                    }
+                )
             }
         }
     }

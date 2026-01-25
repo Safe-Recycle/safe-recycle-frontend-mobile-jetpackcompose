@@ -18,7 +18,14 @@ import com.example.saferecycle.data.dummyWastes
 import com.example.saferecycle.ui.component.SearchField
 
 @Composable
-fun HomeScreen(onNavigateToCategory: () -> Unit) {
+fun HomeScreen(
+    onNavigateToSearch: () -> Unit,
+    onNavigateToCategory: () -> Unit,
+    onNavigateToCategoryWasteList: (String, Int) -> Unit,
+    onNavigateToSuggestedWasteList: (String) -> Unit,
+    onNavigateToPopularWasteList: (String) -> Unit,
+    onNavigateToDetailWaste: (Int) -> Unit,
+) {
     Scaffold { innerPadding ->
         LazyColumn(
             verticalArrangement = spacedBy(24.dp),
@@ -36,29 +43,35 @@ fun HomeScreen(onNavigateToCategory: () -> Unit) {
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
-                        ) {}
+                        ) { onNavigateToSearch() }
                         .height(45.dp), value = ""
                 )
             }
             item {
                 CategorySection(
                     categories = dummyCategories,
-                    onClickSeeAll = { onNavigateToCategory() },
-                    onClickCategory = { },
+                    onCategoriesClick = { onNavigateToCategory() },
+                    onCategoryClick = { categoryName, categoryId ->
+                        onNavigateToCategoryWasteList("$categoryName Category", categoryId)
+                    },
                 )
             }
             item {
                 SuggestedSection(
                     suggestedWaste = dummyWastes,
-                    onClickWaste = {},
-                    onClickSeeAll = {}
+                    onWasteClick = { onNavigateToDetailWaste(it) },
+                    onSuggestedClick = {
+                        onNavigateToSuggestedWasteList("Suggested For You")
+                    }
                 )
             }
             item {
                 PopularSection(
                     popularWaste = dummyWastes,
-                    onClickWaste = {},
-                    onClickSeeAll = {}
+                    onWasteClick = { onNavigateToDetailWaste(it) },
+                    onPopularClick = {
+                        onNavigateToPopularWasteList("Popular Waste")
+                    }
                 )
             }
         }
