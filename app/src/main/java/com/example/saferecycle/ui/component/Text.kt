@@ -61,3 +61,21 @@ fun BoldedText(
         fontWeight = FontWeight.Bold
     )
 }
+
+@Composable
+fun MediumText(
+    text: String,
+    fontSize: TextUnit = 16.sp,
+    color: Color = SafeRecycleTheme.colors.foreground,
+    fontWeight: FontWeight = FontWeight.Medium
+) {
+    Text(
+        text = text,
+        fontFamily = fontFamily,
+        fontSize = fontSize,
+        color = color,
+        lineHeight = 21.sp,
+        textAlign = TextAlign.Center,
+        fontWeight = fontWeight
+    )
+}
