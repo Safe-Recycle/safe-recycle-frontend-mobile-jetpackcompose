@@ -1,5 +1,7 @@
 package com.example.saferecycle.data
 
+val emptyWasteList = mutableListOf<Waste>()
+
 val dummyCategories = mutableListOf(
     Category(
         id = 1,
@@ -104,6 +106,84 @@ val dummyWastes = mutableListOf(
             imagePath = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
         ),
     ),
-
-
+    Waste(
+        id = 1,
+        name = "Can",
+        imagePath = "https://cdn.pixabay.com/photo/2016/08/05/23/16/coca-cola-1573554_1280.jpg",
+        category = Category(
+            id = 3,
+            name = "Metal",
+            imagePath = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
+        ),
+    ),
+    Waste(
+        id = 2,
+        name = "Plastic Bottle",
+        imagePath = "https://media.istockphoto.com/id/172715253/photo/bottle-of-water.jpg?s=612x612&w=0&k=20&c=hyKU4mWql3ei8UGICIRl8ys6L-iAfzo4BlNd_gnisVw=",
+        category = Category(
+            id = 2,
+            name = "Plastic",
+            imagePath = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
+        ),
+    ),
+    Waste(
+        id = 3,
+        name = "Food Waste",
+        imagePath = "https://www.shutterstock.com/image-photo/sorted-kitchen-food-waste-paper-260nw-2628920935.jpg",
+        category = Category(
+            id = 1,
+            name = "Organic",
+            imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
+        )
+    ),
+    Waste(
+        id = 4,
+        name = "Wine Bottle",
+        imagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4gmH2nFfn-VDFGvpiY35BQEf1X61_LRxc2Q&s",
+        category = Category(
+            id = 4,
+            name = "Glass",
+            imagePath = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
+        ),
+    ),
+    Waste(
+        id = 1,
+        name = "Can",
+        imagePath = "https://cdn.pixabay.com/photo/2016/08/05/23/16/coca-cola-1573554_1280.jpg",
+        category = Category(
+            id = 3,
+            name = "Metal",
+            imagePath = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
+        ),
+    ),
+    Waste(
+        id = 2,
+        name = "Plastic Bottle",
+        imagePath = "https://media.istockphoto.com/id/172715253/photo/bottle-of-water.jpg?s=612x612&w=0&k=20&c=hyKU4mWql3ei8UGICIRl8ys6L-iAfzo4BlNd_gnisVw=",
+        category = Category(
+            id = 2,
+            name = "Plastic",
+            imagePath = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
+        ),
+    ),
+    Waste(
+        id = 3,
+        name = "Food Waste",
+        imagePath = "https://www.shutterstock.com/image-photo/sorted-kitchen-food-waste-paper-260nw-2628920935.jpg",
+        category = Category(
+            id = 1,
+            name = "Organic",
+            imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
+        )
+    ),
+    Waste(
+        id = 4,
+        name = "Wine Bottle",
+        imagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4gmH2nFfn-VDFGvpiY35BQEf1X61_LRxc2Q&s",
+        category = Category(
+            id = 4,
+            name = "Glass",
+            imagePath = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
+        ),
+    )
 )
