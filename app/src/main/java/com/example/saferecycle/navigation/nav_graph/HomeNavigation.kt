@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.saferecycle.ui.screen.category.CategoryScreen
 import com.example.saferecycle.ui.screen.home.HomeScreen
+import com.example.saferecycle.ui.screen.search.SearchScreen
 import com.example.saferecycle.ui.screen.waste_list.WasteListScreen
 
 @Serializable
@@ -22,6 +23,9 @@ data class WasteList(
     val categoryId: Int? = null
 )
 
+@Serializable
+object Search
+
 fun NavGraphBuilder.mainGraph(
     navController: NavController,
 ) {
@@ -30,7 +34,7 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToCategory = {
                 navController.navigate(Category)
             },
-            onNavigateToSearch = {},
+            onNavigateToSearch = { navController.navigate(Search) },
             onNavigateToCategoryWasteList = { source, categoryId ->
                 navController.navigate(
                     WasteList(
@@ -48,7 +52,7 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToDetailWaste = {}
         )
     }
-    composable<Category> {from: NavBackStackEntry ->
+    composable<Category> { from: NavBackStackEntry ->
         CategoryScreen(onNavigateToCategoryWasteList = { source, categoryId ->
             navController.navigate(
                 WasteList(
@@ -56,13 +60,19 @@ fun NavGraphBuilder.mainGraph(
                     categoryId = categoryId
                 )
             )
-        },onBackClick = { navController.navigateUp() })
+        }, onBackClick = { navController.navigateUp() })
     }
     composable<WasteList> { backStackEntry ->
         val wasteList = backStackEntry.toRoute<WasteList>()
         WasteListScreen(
             source = wasteList.source,
             categoryId = wasteList.categoryId,
+            onBackClick = { navController.navigateUp() },
+            onNavigateToDetailWaste = {}
+        )
+    }
+    composable<Search> {
+        SearchScreen(
             onBackClick = { navController.navigateUp() },
             onNavigateToDetailWaste = {}
         )

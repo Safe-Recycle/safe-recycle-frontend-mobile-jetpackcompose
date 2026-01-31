@@ -65,7 +65,7 @@ val dummyCategories = mutableListOf(
     ),
 )
 
-val dummyWastes = mutableListOf(
+val dummyWastes: MutableList<Waste> = mutableListOf(
     Waste(
         id = 1,
         name = "Can",
