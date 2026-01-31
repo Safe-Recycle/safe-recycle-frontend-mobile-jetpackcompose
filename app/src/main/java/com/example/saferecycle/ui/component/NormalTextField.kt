@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composables.icons.lucide.Eye
@@ -70,10 +72,11 @@ fun NormalTextField(
                             Lucide.Eye
                         else Lucide.EyeOff,
                         contentDescription = "Visibility Icon",
-                        tint = Color(0XFF3F845F)
+                        tint = SafeRecycleTheme.colors.textSecondary
                     )
                 }
         },
+        visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,   // background saat fokus
             unfocusedContainerColor = Color.White, // background saat tidak fokus

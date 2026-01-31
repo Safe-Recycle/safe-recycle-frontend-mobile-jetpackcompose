@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.saferecycle.navigation.nav_graph.Home
 import com.example.saferecycle.navigation.nav_graph.Login
+import com.example.saferecycle.navigation.nav_graph.authGraph
 import com.example.saferecycle.navigation.nav_graph.mainGraph
 import com.example.saferecycle.ui.screen.splash.SplashScreen
 import kotlinx.serialization.Serializable
@@ -17,7 +18,8 @@ object Splash
 fun AppNavigation(
 ) {
     //token null -> login else home
-    val routeAfterSplash = if (false/*authViewModel.getToken() == null*/) Login else Home
+    val routeAfterSplash =
+        if (true/*authViewModel.getToken() == null*/) Login else Home
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -33,5 +35,6 @@ fun AppNavigation(
             )
         }
         mainGraph(navController = navController)
+        authGraph(navController = navController)
     }
 }

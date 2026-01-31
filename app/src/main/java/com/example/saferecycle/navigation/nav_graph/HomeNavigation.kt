@@ -84,8 +84,14 @@ fun NavGraphBuilder.mainGraph(
     }
     composable<Profile> {
         ProfileScreen(
-            onNavigateToChangePassword = {},
-            onNavigateToLogin = {}
+            onNavigateToChangePassword = {navController.navigate(ChangePassword)},
+            onNavigateToLogin = {
+                navController.navigate(Login){
+                    popUpTo(Home) {
+                        inclusive = true
+                    }
+                }
+            }
         )
     }
 }
