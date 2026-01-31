@@ -25,6 +25,7 @@ fun HomeScreen(
     onNavigateToSuggestedWasteList: (String) -> Unit,
     onNavigateToPopularWasteList: (String) -> Unit,
     onNavigateToDetailWaste: (Int) -> Unit,
+    onNavigateToProfile:()-> Unit
 ) {
     Scaffold { innerPadding ->
         LazyColumn(
@@ -34,7 +35,7 @@ fun HomeScreen(
                 .padding(16.dp)
         ) {
             item {
-                HeaderSection(username = "Elma", initial = "E")
+                HeaderSection(username = "Elma", initial = "E", onInitialCardClick = { onNavigateToProfile() })
             }
             item {
                 SearchField(
@@ -44,14 +45,15 @@ fun HomeScreen(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
                         ) { onNavigateToSearch() }
-                        .height(45.dp), value = ""
+                        .height(45.dp),
+                    value = ""
                 )
             }
             item {
                 CategorySection(
                     categories = dummyCategories,
                     onCategoriesClick = { onNavigateToCategory() },
-                    onCategoryClick = { categoryName, categoryId ->
+                    onCategoryCardClick = { categoryName, categoryId ->
                         onNavigateToCategoryWasteList("$categoryName Category", categoryId)
                     },
                 )
@@ -59,7 +61,7 @@ fun HomeScreen(
             item {
                 SuggestedSection(
                     suggestedWaste = dummyWastes,
-                    onWasteClick = { onNavigateToDetailWaste(it) },
+                    onWasteCardClick = { onNavigateToDetailWaste(it) },
                     onSuggestedClick = {
                         onNavigateToSuggestedWasteList("Suggested For You")
                     }
@@ -68,7 +70,7 @@ fun HomeScreen(
             item {
                 PopularSection(
                     popularWaste = dummyWastes,
-                    onWasteClick = { onNavigateToDetailWaste(it) },
+                    onWasteCardClick = { onNavigateToDetailWaste(it) },
                     onPopularClick = {
                         onNavigateToPopularWasteList("Popular Waste")
                     }

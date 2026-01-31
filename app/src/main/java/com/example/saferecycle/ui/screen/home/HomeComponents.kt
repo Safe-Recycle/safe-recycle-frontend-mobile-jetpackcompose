@@ -29,13 +29,17 @@ import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import com.example.saferecycle.ui.theme.fontFamily
 
 @Composable
-fun HeaderSection(username: String, initial: String) {
+fun HeaderSection(
+    username: String,
+    initial: String,
+    onInitialCardClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         NameCatchPhrase(username = username)
-        InitialCard(initial = initial)
+        InitialCard(initial = initial, onClick = { onInitialCardClick() })
     }
 }
 
@@ -83,7 +87,7 @@ fun ListTitle(text: String, onClick: () -> Unit) {
 @Composable
 fun CategorySection(
     onCategoriesClick: () -> Unit,
-    onCategoryClick: (String, Int) -> Unit,
+    onCategoryCardClick: (String, Int) -> Unit,
     categories: List<Category>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
@@ -95,7 +99,7 @@ fun CategorySection(
             categories.take(4).forEach { category ->
                 CategoryCard(
                     category = category,
-                    onClick = { onCategoryClick(category.name, category.id) }
+                    onClick = { onCategoryCardClick(category.name, category.id) }
                 )
             }
         }
@@ -105,7 +109,7 @@ fun CategorySection(
 @Composable
 fun SuggestedSection(
     onSuggestedClick: () -> Unit,
-    onWasteClick: (Int) -> Unit,
+    onWasteCardClick: (Int) -> Unit,
     suggestedWaste: List<Waste>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
@@ -115,7 +119,7 @@ fun SuggestedSection(
             horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
         ) {
             suggestedWaste.take(2).forEach { waste ->
-                WasteCard(waste = waste, onClick = { onWasteClick(waste.id) })
+                WasteCard(waste = waste, onClick = { onWasteCardClick(waste.id) })
             }
         }
     }
@@ -124,7 +128,7 @@ fun SuggestedSection(
 @Composable
 fun PopularSection(
     onPopularClick: () -> Unit,
-    onWasteClick: (Int) -> Unit,
+    onWasteCardClick: (Int) -> Unit,
     popularWaste: List<Waste>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
@@ -135,7 +139,7 @@ fun PopularSection(
                 horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
             ) {
                 rowItems.forEach { waste ->
-                    WasteCard(waste, onClick = { onWasteClick(waste.id) })
+                    WasteCard(waste, onClick = { onWasteCardClick(waste.id) })
                 }
             }
         }
