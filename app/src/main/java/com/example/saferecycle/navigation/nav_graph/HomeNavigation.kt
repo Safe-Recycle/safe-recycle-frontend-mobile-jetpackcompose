@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.saferecycle.ui.screen.category.CategoryScreen
 import com.example.saferecycle.ui.screen.home.HomeScreen
+import com.example.saferecycle.ui.screen.profile.ProfileScreen
 import com.example.saferecycle.ui.screen.search.SearchScreen
 import com.example.saferecycle.ui.screen.waste_list.WasteListScreen
 
@@ -25,6 +26,9 @@ data class WasteList(
 
 @Serializable
 object Search
+
+@Serializable
+object Profile
 
 fun NavGraphBuilder.mainGraph(
     navController: NavController,
@@ -49,7 +53,8 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToPopularWasteList = { source ->
                 navController.navigate(WasteList(source = source))
             },
-            onNavigateToDetailWaste = {}
+            onNavigateToDetailWaste = {},
+            onNavigateToProfile = { navController.navigate(Profile) }
         )
     }
     composable<Category> { from: NavBackStackEntry ->
@@ -75,6 +80,12 @@ fun NavGraphBuilder.mainGraph(
         SearchScreen(
             onBackClick = { navController.navigateUp() },
             onNavigateToDetailWaste = {}
+        )
+    }
+    composable<Profile> {
+        ProfileScreen(
+            onNavigateToChangePassword = {},
+            onNavigateToLogin = {}
         )
     }
 }

@@ -31,10 +31,6 @@ fun WasteCard(waste: Waste, onClick: () -> Unit) {
             modifier = Modifier
                 .size(163.dp)
                 .clip(shape),
-//                .clickable(
-//                    indication = null,
-//                    interactionSource = remember { MutableInteractionSource() }
-//                ) { onClick() },
             model = waste.imagePath,
             contentDescription = "${waste.name} Image",
             contentScale = ContentScale.Crop
