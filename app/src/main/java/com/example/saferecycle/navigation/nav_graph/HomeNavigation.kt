@@ -10,6 +10,7 @@ import com.example.saferecycle.ui.screen.category.CategoryScreen
 import com.example.saferecycle.ui.screen.home.HomeScreen
 import com.example.saferecycle.ui.screen.profile.ProfileScreen
 import com.example.saferecycle.ui.screen.search.SearchScreen
+import com.example.saferecycle.ui.screen.waste_details.WasteDetailsScreen
 import com.example.saferecycle.ui.screen.waste_list.WasteListScreen
 
 @Serializable
@@ -22,6 +23,11 @@ object Category
 data class WasteList(
     val source: String,
     val categoryId: Int? = null
+)
+
+@Serializable
+data class WasteDetails(
+    val wasteId: Int
 )
 
 @Serializable
@@ -53,7 +59,9 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToPopularWasteList = { source ->
                 navController.navigate(WasteList(source = source))
             },
-            onNavigateToDetailWaste = {},
+            onNavigateToDetailWaste = { wasteId ->
+                navController.navigate(WasteDetails(wasteId = wasteId))
+            },
             onNavigateToProfile = { navController.navigate(Profile) }
         )
     }
@@ -73,20 +81,32 @@ fun NavGraphBuilder.mainGraph(
             source = wasteList.source,
             categoryId = wasteList.categoryId,
             onBackClick = { navController.navigateUp() },
-            onNavigateToDetailWaste = {}
+            onNavigateToDetailWaste = { wasteId ->
+                navController.navigate(WasteDetails(wasteId = wasteId))
+            }
+        )
+    }
+
+    composable<WasteDetails> { backStackEntry ->
+        val wasteDetails = backStackEntry.toRoute<WasteDetails>()
+        WasteDetailsScreen(
+            wasteId = wasteDetails.wasteId,
+            onBackClick = {navController.navigateUp()}
         )
     }
     composable<Search> {
         SearchScreen(
             onBackClick = { navController.navigateUp() },
-            onNavigateToDetailWaste = {}
+            onNavigateToDetailWaste = { wasteId ->
+                navController.navigate(WasteDetails(wasteId = wasteId))
+            }
         )
     }
     composable<Profile> {
         ProfileScreen(
-            onNavigateToChangePassword = {navController.navigate(ChangePassword)},
+            onNavigateToChangePassword = { navController.navigate(ChangePassword) },
             onNavigateToLogin = {
-                navController.navigate(Login){
+                navController.navigate(Login) {
                     popUpTo(Home) {
                         inclusive = true
                     }

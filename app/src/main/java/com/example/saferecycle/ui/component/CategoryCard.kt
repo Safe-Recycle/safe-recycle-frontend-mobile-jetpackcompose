@@ -42,10 +42,6 @@ fun CategoryCard(
                     color = SafeRecycleTheme.colors.elementBackground,
                     shape = shape
                 )
-//                .clickable(
-//                    indication = null,
-//                    interactionSource = remember { MutableInteractionSource() }
-//                )  { onClick() },
             ,contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
