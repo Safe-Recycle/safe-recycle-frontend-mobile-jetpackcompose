@@ -16,7 +16,8 @@ fun NormalText(
     modifier: Modifier = Modifier,
     text: String,
     fontSize: TextUnit = 14.sp,
-    color: Color = SafeRecycleTheme.colors.foreground
+    color: Color = SafeRecycleTheme.colors.foreground,
+    textAlign: TextAlign = TextAlign.Center
 ) {
     Text(
         modifier = modifier,
@@ -25,7 +26,7 @@ fun NormalText(
         fontSize = fontSize,
         color = color,
         lineHeight = 18.sp,
-        textAlign = TextAlign.Center
+        textAlign = textAlign
     )
 }
 
