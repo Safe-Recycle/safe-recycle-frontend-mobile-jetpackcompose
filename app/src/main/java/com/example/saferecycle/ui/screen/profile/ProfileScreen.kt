@@ -14,16 +14,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.saferecycle.ui.component.HorizontalLine
+import com.example.saferecycle.ui.component.SafeRecycleBottomNavBar
 
 @Composable
 fun ProfileScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToScan: () -> Unit,
     onNavigateToChangePassword: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     val staticUsername = "Elma"
     var username by remember { mutableStateOf("Elma") }
     val email = "elma@gmail.com"
-    Scaffold() { innerPadding ->
+
+    Scaffold(
+        bottomBar = {
+            SafeRecycleBottomNavBar(
+                onNavigateToHome = { onNavigateToHome() },
+                onNavigateToScan = { onNavigateToScan() },
+                onNavigateToProfile = { },
+                activeItem = 2
+            )
+        }
+    ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -32,7 +45,11 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                HeaderSection(username = staticUsername, initial = "E", email = email)
+                HeaderSection(
+                    username = staticUsername,
+                    initial = "E",
+                    email = email
+                )
             }
             item {
                 NameEmailSection(
