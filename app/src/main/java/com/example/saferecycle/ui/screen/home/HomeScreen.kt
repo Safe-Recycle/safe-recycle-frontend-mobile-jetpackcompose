@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.saferecycle.data.dummyCategories
 import com.example.saferecycle.data.dummyWastes
+import com.example.saferecycle.ui.component.SafeRecycleBottomNavBar
 import com.example.saferecycle.ui.component.SearchField
 
 @Composable
@@ -25,17 +26,30 @@ fun HomeScreen(
     onNavigateToSuggestedWasteList: (String) -> Unit,
     onNavigateToPopularWasteList: (String) -> Unit,
     onNavigateToDetailWaste: (Int) -> Unit,
-    onNavigateToProfile:()-> Unit
+    onNavigateToProfile: () -> Unit
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            SafeRecycleBottomNavBar(
+                modifier = Modifier.padding(),
+                onNavigateToHome = {},
+                onNavigateToScan = { },
+                onNavigateToProfile = { onNavigateToProfile() },
+                activeItem = 0
+            )
+        }
+    ) { innerPadding ->
         LazyColumn(
             verticalArrangement = spacedBy(24.dp),
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
         ) {
             item {
-                HeaderSection(username = "Elma", initial = "E", onInitialCardClick = { onNavigateToProfile() })
+                HeaderSection(
+                    username = "Elma",
+                    initial = "E",
+                    onInitialCardClick = { onNavigateToProfile() })
             }
             item {
                 SearchField(
@@ -54,7 +68,10 @@ fun HomeScreen(
                     categories = dummyCategories,
                     onCategoriesClick = { onNavigateToCategory() },
                     onCategoryCardClick = { categoryName, categoryId ->
-                        onNavigateToCategoryWasteList("$categoryName Category", categoryId)
+                        onNavigateToCategoryWasteList(
+                            "$categoryName Category",
+                            categoryId
+                        )
                     },
                 )
             }

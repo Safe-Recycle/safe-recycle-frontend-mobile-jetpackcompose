@@ -91,7 +91,7 @@ fun NavGraphBuilder.mainGraph(
         val wasteDetails = backStackEntry.toRoute<WasteDetails>()
         WasteDetailsScreen(
             wasteId = wasteDetails.wasteId,
-            onBackClick = {navController.navigateUp()}
+            onBackClick = { navController.navigateUp() }
         )
     }
     composable<Search> {
@@ -111,6 +111,10 @@ fun NavGraphBuilder.mainGraph(
                         inclusive = true
                     }
                 }
+            },
+            onNavigateToScan = {},
+            onNavigateToHome = {
+                navController.navigate(Home)
             }
         )
     }
