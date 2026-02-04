@@ -26,14 +26,15 @@ fun HomeScreen(
     onNavigateToSuggestedWasteList: (String) -> Unit,
     onNavigateToPopularWasteList: (String) -> Unit,
     onNavigateToDetailWaste: (Int) -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onNavigateToScan: () -> Unit
 ) {
     Scaffold(
         bottomBar = {
             SafeRecycleBottomNavBar(
                 modifier = Modifier.padding(),
                 onNavigateToHome = {},
-                onNavigateToScan = { },
+                onNavigateToScan = { onNavigateToScan() },
                 onNavigateToProfile = { onNavigateToProfile() },
                 activeItem = 0
             )

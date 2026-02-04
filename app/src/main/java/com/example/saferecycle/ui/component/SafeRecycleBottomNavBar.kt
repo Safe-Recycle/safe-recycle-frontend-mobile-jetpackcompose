@@ -72,7 +72,7 @@ fun CommonNavItem(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) { onClick() }
-            .padding(vertical = 25.dp),
+            .padding(top =25.dp,bottom=30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = spacedBy(4.dp)
     ) {

@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.example.saferecycle.ui.screen.category.CategoryScreen
 import com.example.saferecycle.ui.screen.home.HomeScreen
 import com.example.saferecycle.ui.screen.profile.ProfileScreen
+import com.example.saferecycle.ui.screen.scan_waste.ScanWasteScreen
 import com.example.saferecycle.ui.screen.search.SearchScreen
 import com.example.saferecycle.ui.screen.waste_details.WasteDetailsScreen
 import com.example.saferecycle.ui.screen.waste_list.WasteListScreen
@@ -36,6 +37,9 @@ object Search
 @Serializable
 object Profile
 
+@Serializable
+object ScanWaste
+
 fun NavGraphBuilder.mainGraph(
     navController: NavController,
 ) {
@@ -62,7 +66,10 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToDetailWaste = { wasteId ->
                 navController.navigate(WasteDetails(wasteId = wasteId))
             },
-            onNavigateToProfile = { navController.navigate(Profile) }
+            onNavigateToProfile = {
+                navController.navigate(Profile)
+            },
+            onNavigateToScan = { navController.navigate(ScanWaste) },
         )
     }
     composable<Category> { from: NavBackStackEntry ->
@@ -112,10 +119,17 @@ fun NavGraphBuilder.mainGraph(
                     }
                 }
             },
-            onNavigateToScan = {},
+            onNavigateToScan = { navController.navigate(ScanWaste) },
             onNavigateToHome = {
-                navController.navigate(Home)
+                navController.navigate(Home) {
+                    popUpTo(Profile) {
+                        inclusive = true
+                    }
+                }
             }
         )
+    }
+    composable<ScanWaste> {
+        ScanWasteScreen(onBackClick = {navController.navigateUp()})
     }
 }
