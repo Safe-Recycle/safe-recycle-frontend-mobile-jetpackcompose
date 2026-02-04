@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.saferecycle"
-        minSdk = 31
+        minSdk = 33
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -84,6 +84,17 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
 
     implementation("com.github.jeziellago:compose-markdown:0.5.8")
+
+    val cameraxVersion = "1.6.0-beta01"
+    // The following line is optional, as the core library is included indirectly by camera-camera2
+    implementation("androidx.camera:camera-core:${cameraxVersion}")
+    implementation("androidx.camera:camera-camera2:${cameraxVersion}")
+    // If you want to additionally use the CameraX Lifecycle library
+    implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
+    // If you want to additionally use the CameraX View class
+    implementation("androidx.camera:camera-view:${cameraxVersion}")
+    // If you want to additionally use the CameraX Extensions library
+    implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

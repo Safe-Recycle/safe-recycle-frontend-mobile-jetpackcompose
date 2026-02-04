@@ -6,15 +6,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.composables.icons.lucide.ChevronLeft
 import com.composables.icons.lucide.Lucide
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(text: String, onBackClick: () -> Unit) {
+fun TopBar(
+    text: String,
+    onBackClick: () -> Unit,
+    containerColors: Color = SafeRecycleTheme.colors.background,
+    navigationIconContentColor: Color = SafeRecycleTheme.colors.foreground,
+    titleContentColor: Color = SafeRecycleTheme.colors.foreground
+) {
     CenterAlignedTopAppBar(
-        title = { MediumText(text = text) },
+        title = { MediumText(text = text, color = titleContentColor) },
         navigationIcon = {
             IconButton(onClick = { onBackClick() }) {
                 Icon(
@@ -24,10 +31,10 @@ fun TopBar(text: String, onBackClick: () -> Unit) {
             }
         },
         colors = TopAppBarColors(
-            containerColor = SafeRecycleTheme.colors.background,
+            containerColor = containerColors,
             scrolledContainerColor = SafeRecycleTheme.colors.background,
-            navigationIconContentColor = SafeRecycleTheme.colors.foreground,
-            titleContentColor = SafeRecycleTheme.colors.foreground,
+            navigationIconContentColor = navigationIconContentColor,
+            titleContentColor = titleContentColor,
             actionIconContentColor = SafeRecycleTheme.colors.foreground
         )
     )
