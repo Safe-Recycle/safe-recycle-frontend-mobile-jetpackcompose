@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     kotlin("plugin.serialization") version "2.0.21"
-//    id("com.google.devtools.ksp")
-//    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -76,9 +76,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //hilt (dependency injection)
-//    implementation("com.google.dagger:hilt-android:2.59")
-//    ksp("com.google.dagger:hilt-compiler:2.59")
-//    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("com.google.dagger:hilt-android:2.59.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.59.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
     implementation(libs.androidx.compose.runtime)

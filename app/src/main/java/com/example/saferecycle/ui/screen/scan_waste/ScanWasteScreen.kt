@@ -110,7 +110,6 @@ fun ScanWasteScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
             )
         }
     }
-
 }
 
 fun createImageFile(context: Context): File {

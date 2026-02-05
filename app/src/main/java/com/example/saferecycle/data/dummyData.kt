@@ -1,5 +1,14 @@
 package com.example.saferecycle.data
 
+import com.example.saferecycle.data.model.Category
+import com.example.saferecycle.data.model.User
+import com.example.saferecycle.data.model.Waste
+
+val dummyUser = User(
+    name = "Elma",
+    email = "elmahanarokushou@gmail.com"
+)
+
 val emptyWasteList = mutableListOf<Waste>()
 
 val dummyCategories = mutableListOf(
