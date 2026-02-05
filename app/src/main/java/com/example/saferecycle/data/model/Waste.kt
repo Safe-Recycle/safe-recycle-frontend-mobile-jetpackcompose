@@ -1,4 +1,4 @@
-package com.example.saferecycle.data
+package com.example.saferecycle.data.model
 
 data class Waste(
     val id: Int,

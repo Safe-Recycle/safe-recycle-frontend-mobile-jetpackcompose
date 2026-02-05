@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,15 +19,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.saferecycle.data.Category
-import com.example.saferecycle.data.Waste
+import com.example.saferecycle.data.model.Category
+import com.example.saferecycle.data.model.Waste
 import com.example.saferecycle.ui.component.BoldedText
+import com.example.saferecycle.ui.component.BoldedTextSkeleton
 import com.example.saferecycle.ui.component.CategoryCard
+import com.example.saferecycle.ui.component.CategoryCardSkeleton
 import com.example.saferecycle.ui.component.InitialCard
+import com.example.saferecycle.ui.component.InitialCardSkeleton
 import com.example.saferecycle.ui.component.NormalText
+import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.WasteCard
+import com.example.saferecycle.ui.component.WasteCardSkeleton
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import com.example.saferecycle.ui.theme.fontFamily
+import kotlin.collections.chunked
+import kotlin.collections.forEach
 
 @Composable
 fun HeaderSection(
@@ -40,6 +48,17 @@ fun HeaderSection(
     ) {
         NameCatchPhrase(username = username)
         InitialCard(initial = initial, onClick = { onInitialCardClick() })
+    }
+}
+
+@Composable
+fun HeaderSectionSkeleton(modifier: Modifier = Modifier) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        NameCatchPhraseSkeleton()
+        InitialCardSkeleton()
     }
 }
 
@@ -66,6 +85,15 @@ fun NameCatchPhrase(username: String) {
 }
 
 @Composable
+fun NameCatchPhraseSkeleton(modifier: Modifier = Modifier) {
+    Column(verticalArrangement = spacedBy(5.dp)) {
+        NormalTextSkeleton(modifier = Modifier.fillMaxWidth(0.3f))
+        BoldedTextSkeleton(modifier = Modifier.fillMaxWidth(0.65f))
+        BoldedTextSkeleton(modifier = Modifier.fillMaxWidth(0.5f))
+    }
+}
+
+@Composable
 fun ListTitle(text: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -85,6 +113,18 @@ fun ListTitle(text: String, onClick: () -> Unit) {
 }
 
 @Composable
+fun ListTileSkeleton(modifier: Modifier = Modifier) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        BoldedTextSkeleton(modifier = Modifier.fillMaxWidth(0.4f))
+        NormalTextSkeleton(modifier = Modifier.fillMaxWidth(0.2f))
+    }
+}
+
+@Composable
 fun CategorySection(
     onCategoriesClick: () -> Unit,
     onCategoryCardClick: (String, Int) -> Unit,
@@ -99,9 +139,32 @@ fun CategorySection(
             categories.take(4).forEach { category ->
                 CategoryCard(
                     category = category,
-                    onClick = { onCategoryCardClick(category.name, category.id) }
+                    onClick = {
+                        onCategoryCardClick(
+                            category.name,
+                            category.id
+                        )
+                    }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CategorySectionSkeleton(
+    modifier: Modifier = Modifier,
+) {
+    Column(verticalArrangement = spacedBy(16.dp)) {
+        ListTileSkeleton()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = /*Arrangement.SpaceBetween*/ spacedBy(17.dp)
+        ) {
+            CategoryCardSkeleton()
+            CategoryCardSkeleton()
+            CategoryCardSkeleton()
+            CategoryCardSkeleton()
         }
     }
 }
@@ -119,8 +182,24 @@ fun SuggestedSection(
             horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
         ) {
             suggestedWaste.take(2).forEach { waste ->
-                WasteCard(waste = waste, onClick = { onWasteCardClick(waste.id) })
+                WasteCard(
+                    waste = waste,
+                    onClick = { onWasteCardClick(waste.id) })
             }
+        }
+    }
+}
+
+@Composable
+fun SuggestionSectionSkeleton(modifier: Modifier = Modifier) {
+    Column(verticalArrangement = spacedBy(16.dp)) {
+        ListTileSkeleton()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
+        ) {
+            WasteCardSkeleton()
+            WasteCardSkeleton()
         }
     }
 }
@@ -142,6 +221,27 @@ fun PopularSection(
                     WasteCard(waste, onClick = { onWasteCardClick(waste.id) })
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PopularSectionSkeleton(modifier: Modifier = Modifier) {
+    Column(verticalArrangement = spacedBy(16.dp)) {
+        ListTileSkeleton()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
+        ) {
+            WasteCardSkeleton()
+            WasteCardSkeleton()
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween /*spacedBy(19.dp)*/
+        ) {
+            WasteCardSkeleton()
+            WasteCardSkeleton()
         }
     }
 }

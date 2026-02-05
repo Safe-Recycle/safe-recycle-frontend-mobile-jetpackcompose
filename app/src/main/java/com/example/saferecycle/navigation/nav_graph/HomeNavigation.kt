@@ -1,5 +1,6 @@
 package com.example.saferecycle.navigation.nav_graph
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavBackStackEntry
 import kotlinx.serialization.Serializable
 import androidx.navigation.NavController
@@ -24,12 +25,22 @@ object Category
 data class WasteList(
     val source: String,
     val categoryId: Int? = null
-)
+) {
+    companion object {
+        fun from(savedStateHandle: SavedStateHandle) =
+            savedStateHandle.toRoute<WasteList>()
+    }
+}
 
 @Serializable
 data class WasteDetails(
     val wasteId: Int
-)
+) {
+    companion object {
+        fun from(savedStateHandle: SavedStateHandle) =
+            savedStateHandle.toRoute<WasteDetails>()
+    }
+}
 
 @Serializable
 object Search
@@ -130,6 +141,6 @@ fun NavGraphBuilder.mainGraph(
         )
     }
     composable<ScanWaste> {
-        ScanWasteScreen(onBackClick = {navController.navigateUp()})
+        ScanWasteScreen(onBackClick = { navController.navigateUp() })
     }
 }

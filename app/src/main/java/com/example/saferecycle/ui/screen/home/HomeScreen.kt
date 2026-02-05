@@ -9,14 +9,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.saferecycle.data.dummyCategories
 import com.example.saferecycle.data.dummyWastes
 import com.example.saferecycle.ui.component.SafeRecycleBottomNavBar
 import com.example.saferecycle.ui.component.SearchField
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.saferecycle.data.network.Resource
+import com.example.saferecycle.ui.component.SearchFieldSkeleton
 
 @Composable
 fun HomeScreen(
@@ -27,8 +32,19 @@ fun HomeScreen(
     onNavigateToPopularWasteList: (String) -> Unit,
     onNavigateToDetailWaste: (Int) -> Unit,
     onNavigateToProfile: () -> Unit,
-    onNavigateToScan: () -> Unit
+    onNavigateToScan: () -> Unit,
+    vm: HomeViewModel = hiltViewModel(),
 ) {
+    val userDataState by vm.user.collectAsState()
+    val categoriesState by vm.categories.collectAsState()
+    val suggestedWastesState by vm.suggestedWastes.collectAsState()
+    val popularWastesState by vm.popularWastes.collectAsState()
+    LaunchedEffect(Unit) {
+        vm.getUserData()
+        vm.getDummyCategories()
+        vm.getDummySuggestedWastes()
+        vm.getDummyPopularWastes()
+    }
     Scaffold(
         bottomBar = {
             SafeRecycleBottomNavBar(
@@ -47,52 +63,93 @@ fun HomeScreen(
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
         ) {
             item {
-                HeaderSection(
-                    username = "Elma",
-                    initial = "E",
-                    onInitialCardClick = { onNavigateToProfile() })
+                when (userDataState) {
+                    is Resource.Loading -> HeaderSectionSkeleton()
+                    is Resource.Success -> {
+                        val user = (userDataState as Resource.Success).data
+                        HeaderSection(
+                            username = user.name,
+                            initial = "E",
+                            onInitialCardClick = { onNavigateToProfile() })
+                    }
+
+                    else -> {}
+                }
             }
             item {
-                SearchField(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(13.dp))
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { onNavigateToSearch() }
-                        .height(45.dp),
-                    value = ""
-                )
-            }
-            item {
-                CategorySection(
-                    categories = dummyCategories,
-                    onCategoriesClick = { onNavigateToCategory() },
-                    onCategoryCardClick = { categoryName, categoryId ->
-                        onNavigateToCategoryWasteList(
-                            "$categoryName Category",
-                            categoryId
+                when (userDataState) {
+                    is Resource.Loading -> SearchFieldSkeleton()
+                    is Resource.Success -> {
+                        SearchField(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(13.dp))
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) { onNavigateToSearch() }
+                                .height(45.dp),
+                            value = ""
                         )
-                    },
-                )
+                    }
+                    else -> {}
+                }
+
             }
             item {
-                SuggestedSection(
-                    suggestedWaste = dummyWastes,
-                    onWasteCardClick = { onNavigateToDetailWaste(it) },
-                    onSuggestedClick = {
-                        onNavigateToSuggestedWasteList("Suggested For You")
+                when (categoriesState) {
+                    is Resource.Loading -> CategorySectionSkeleton()
+                    is Resource.Success -> {
+                        val categories =
+                            (categoriesState as Resource.Success).data
+                        CategorySection(
+                            categories = categories,
+                            onCategoriesClick = { onNavigateToCategory() },
+                            onCategoryCardClick = { categoryName, categoryId ->
+                                onNavigateToCategoryWasteList(
+                                    "$categoryName Category",
+                                    categoryId
+                                )
+                            },
+                        )
                     }
-                )
+
+                    else -> {}
+                }
             }
             item {
-                PopularSection(
-                    popularWaste = dummyWastes,
-                    onWasteCardClick = { onNavigateToDetailWaste(it) },
-                    onPopularClick = {
-                        onNavigateToPopularWasteList("Popular Waste")
+                when (suggestedWastesState) {
+                    is Resource.Loading -> SuggestionSectionSkeleton()
+                    is Resource.Success -> {
+                        val suggestedWastes =
+                            (suggestedWastesState as Resource.Success).data
+                        SuggestedSection(
+                            suggestedWaste = suggestedWastes,
+                            onWasteCardClick = { onNavigateToDetailWaste(it) },
+                            onSuggestedClick = {
+                                onNavigateToSuggestedWasteList("Suggested for You")
+                            }
+                        )
                     }
-                )
+
+                    else -> {}
+                }
+            }
+            item {
+                when (popularWastesState) {
+                    is Resource.Loading -> PopularSectionSkeleton()
+                    is Resource.Success -> {
+                        val popularWastes =
+                            (popularWastesState as Resource.Success).data
+                        PopularSection(
+                            popularWaste = popularWastes,
+                            onWasteCardClick = { onNavigateToDetailWaste(it) },
+                            onPopularClick = {
+                                onNavigateToPopularWasteList("Popular Waste")
+                            }
+                        )
+                    }
+                    else -> {}
+                }
             }
         }
     }
