@@ -20,7 +20,9 @@ data class SafeRecycleColors(
     val foreground: Color,
     val stroke: Color,
     val background: Color,
-    val textSecondary:Color
+    val textSecondary:Color,
+    val danger:Color,
+    val dangerBackground:Color
 )
 
 val LightSafeRecycleColors = SafeRecycleColors(
@@ -32,7 +34,9 @@ val LightSafeRecycleColors = SafeRecycleColors(
     foreground = Foreground,
     stroke = Stroke,
     background = Background,
-    textSecondary = TextSecondary
+    textSecondary = TextSecondary,
+    danger = Danger,
+    dangerBackground = DangerBackground
 )
 
 val LocalSafeRecycleColors = staticCompositionLocalOf {
@@ -88,7 +92,10 @@ private val SafeRecycleColorScheme = lightColorScheme(
     surface = ElementBackground,
     onSurface = Foreground,
 
-    outline = Stroke
+    outline = Stroke,
+
+    error = Danger,
+    errorContainer = DangerBackground
 )
 
 //private val DarkColorScheme = darkColorScheme(

@@ -74,7 +74,8 @@ fun NameEmailSection(
 @Composable
 fun ButtonsSection(
     onChangePasswordButtonClick: () -> Unit,
-    onSignOutButtonClick: () -> Unit
+    onSignOutButtonClick: () -> Unit,
+    isLogoutLoading: Boolean
 ) {
     Column(verticalArrangement = spacedBy(17.dp)) {
         NormalButton(
@@ -89,7 +90,8 @@ fun ButtonsSection(
             icon = Lucide.LogOut,
             contentDescription = "Icon for Sign Out",
             color = SafeRecycleTheme.colors.stroke,
-            contentColor = SafeRecycleTheme.colors.foreground
+            contentColor = SafeRecycleTheme.colors.foreground,
+            isLoading = isLogoutLoading
         )
     }
 }

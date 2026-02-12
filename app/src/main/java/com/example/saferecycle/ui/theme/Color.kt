@@ -20,3 +20,6 @@ val Foreground = Color(0xFF000000)
 val Stroke = Color(0xFFE8E8E8)
 val Background = Color(0xFFF7F7F7)
 val TextSecondary = Color(0xFF939393)
+
+val DangerBackground = Color(0xFFFFEDF1)
+val Danger = Color(0xFFE92754)

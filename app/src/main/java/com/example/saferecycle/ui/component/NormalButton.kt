@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ fun NormalButton(
     contentColor: Color = SafeRecycleTheme.colors.elementBackground,
     icon: ImageVector? = null,
     contentDescription: String? = null,
+    isLoading: Boolean? = null
 ) {
     val shape = RoundedCornerShape(13.dp)
 
@@ -52,15 +55,22 @@ fun NormalButton(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = contentDescription,
-                    tint = contentColor
+            if (isLoading == true) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = SafeRecycleTheme.colors.elementBackground
                 )
+            } else {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = contentDescription,
+                        tint = contentColor
+                    )
+                }
+                Spacer(Modifier.width(11.dp))
+                MediumText(text = text, color = contentColor)
             }
-            Spacer(Modifier.width(11.dp))
-            MediumText(text = text, color = contentColor)
         }
     }
 }
