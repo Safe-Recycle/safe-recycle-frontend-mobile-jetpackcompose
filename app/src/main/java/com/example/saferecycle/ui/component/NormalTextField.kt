@@ -32,14 +32,14 @@ fun NormalTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: ((String) -> Unit)? = null,
-    placeholder:String,
-    isPassword:Boolean,
+    placeholder: String,
+    isPassword: Boolean,
     leadingIcon: ImageVector,
-    leadingIconContentDescription: String
-
+    leadingIconContentDescription: String,
+//    supportingText:  @Composable (() -> Unit)? = null,
 ) {
     var isVisible by remember { mutableStateOf(!isPassword) }
-    val shape =  RoundedCornerShape(13.dp)
+    val shape = RoundedCornerShape(13.dp)
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         value = value,
@@ -65,7 +65,7 @@ fun NormalTextField(
             )
         },
         trailingIcon = {
-            if(isPassword)
+            if (isPassword)
                 IconButton(onClick = { isVisible = !isVisible }) {
                     Icon(
                         if (isVisible)
@@ -84,9 +84,15 @@ fun NormalTextField(
             focusedIndicatorColor = SafeRecycleTheme.colors.stroke,
             unfocusedIndicatorColor = SafeRecycleTheme.colors.stroke,
             disabledIndicatorColor = SafeRecycleTheme.colors.stroke,
+            errorContainerColor = SafeRecycleTheme.colors.elementBackground ,
             cursorColor = Color.Black,
         ),
         shape = shape,
-        textStyle = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, color = SafeRecycleTheme.colors.foreground)
+        textStyle = TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 14.sp,
+            color = SafeRecycleTheme.colors.foreground
+        ),
+//        supportingText = supportingText
     )
 }

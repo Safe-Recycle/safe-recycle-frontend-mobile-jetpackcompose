@@ -1,9 +1,7 @@
 package com.example.saferecycle.data.repository
 
 import android.content.Context
-import com.example.saferecycle.data.dummyCategories
 import com.example.saferecycle.data.dummyWastes
-import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.Waste
 import com.example.saferecycle.data.network.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,19 +34,6 @@ class WasteRepository @Inject constructor(
     suspend fun getDummyPopularWaste(): Resource<List<Waste>> {
         return try {
             Resource.Success(dummyWastes)
-            //val token = getToken() ?: ""
-            //val response = api.getCompanies(token = "Bearer $token")
-//            if (response.isSuccessful) {
-//                val body = response.body()
-//                if (body != null) {
-//                    Resource.Success(body)
-//                } else {
-//                    Resource.Error("Empty response body")
-//                }
-//            } else {
-//                Resource.Error("HTTP Error: ${response.code()}")
-//            }
-
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Unknown error")
         }
@@ -57,23 +42,10 @@ class WasteRepository @Inject constructor(
     suspend fun getDummyCategorizedWastes(categoryId: Int): Resource<List<Waste>> {
         return try {
             if (categoryId == 12) {
-                Resource.Empty()
+                Resource.Empty("Empty Token")
             } else {
                 Resource.Success(dummyWastes)
             }
-            //val token = getToken() ?: ""
-            //val response = api.getCompanies(token = "Bearer $token")
-//            if (response.isSuccessful) {
-//                val body = response.body()
-//                if (body != null) {
-//                    Resource.Success(body)
-//                } else {
-//                    Resource.Error("Empty response body")
-//                }
-//            } else {
-//                Resource.Error("HTTP Error: ${response.code()}")
-//            }
-
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Unknown error")
         }
@@ -82,7 +54,7 @@ class WasteRepository @Inject constructor(
     suspend fun searchWaste(keyword: String): Resource<List<Waste>> {
         return try {
             if (keyword == "kosong") {
-                Resource.Empty()
+                Resource.Empty("Empty Token")
             } else {
                 Resource.Success(dummyWastes)
             }

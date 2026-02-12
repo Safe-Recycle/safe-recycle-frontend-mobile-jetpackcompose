@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.Waste
 import com.example.saferecycle.data.network.Resource
-import com.example.saferecycle.data.repository.AuthRepository
 import com.example.saferecycle.data.repository.CategoryRepository
 import com.example.saferecycle.data.repository.WasteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
