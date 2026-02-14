@@ -1,6 +1,8 @@
 package com.example.saferecycle.ui.screen.profile
 
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,27 +19,74 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.saferecycle.data.model.User
+import com.example.saferecycle.ui.component.ErrorField
 import com.example.saferecycle.ui.state.AppError
-import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.ui.state.UiState
 import com.example.saferecycle.ui.component.HorizontalLine
 import com.example.saferecycle.ui.component.SafeRecycleBottomNavBar
 import com.example.saferecycle.ui.screen.AuthViewModel2
-import kotlin.math.log
 
 @Composable
 fun ProfileScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToScan: () -> Unit,
-    onNavigateToChangePassword: () -> Unit,
+    onNavigateToChangePassword: (Int) -> Unit,
     onNavigateToLogin: () -> Unit,
-    vm: AuthViewModel2 = hiltViewModel()
+    authViewModel2: AuthViewModel2 = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val staticUsername = "Elma"
-    var username by remember { mutableStateOf("Elma") }
-    val email = "elma@gmail.com"
-    val logoutState by vm.logoutState.collectAsState()
+    var usernameBackend by remember { mutableStateOf("") }
+    var emailBackend by remember { mutableStateOf("") }
+    var isEdited by remember { mutableStateOf(false) }
+    var isNameEdited by remember { mutableStateOf(false) }
+    var isEmailEdited by remember { mutableStateOf(false) }
+    val logoutState by authViewModel2.logoutState.collectAsState()
+    val userState by profileViewModel.user.collectAsState()
+    val userId by profileViewModel.userId.collectAsState()
+    val updateUserDataState by profileViewModel.updateUserData.collectAsState()
+    var updateUserDataErrorMessage by remember { mutableStateOf("") }
+    val request = hashMapOf<String, String>()
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getUserData()
+    }
+
+    LaunchedEffect(usernameBackend, emailBackend) {
+        if (userState is UiState.Success) {
+            val user = (userState as UiState.Success<User>).data
+            isNameEdited = usernameBackend != user.name
+            isEmailEdited = emailBackend != user.email
+            isEdited = isNameEdited || isEmailEdited
+        }
+    }
+
+    LaunchedEffect(updateUserDataState) {
+        when (updateUserDataState) {
+            is UiState.Success -> {
+                profileViewModel.getUserData()
+                isEdited = false
+            }
+
+            is UiState.Error -> {
+
+                updateUserDataErrorMessage =
+                    when (val errorState =
+                        (updateUserDataState as UiState.Error).error) {
+                        is AppError.Network -> errorState.message
+                        is AppError.Server -> errorState.message
+                        is AppError.Unknown -> errorState.message
+                        is AppError.Forbidden -> errorState.message
+                        is AppError.NotFound -> errorState.message
+                        is AppError.Unauthorized -> errorState.message
+                        is AppError.Format -> errorState.message
+                    }
+            }
+
+            else -> {}
+        }
+    }
 
     LaunchedEffect(logoutState) {
         when (logoutState) {
@@ -72,6 +121,7 @@ fun ProfileScreen(
         }
     }
 
+
     Scaffold(
         bottomBar = {
             SafeRecycleBottomNavBar(
@@ -90,27 +140,82 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                HeaderSection(
-                    username = staticUsername,
-                    initial = "E",
-                    email = email
+                when (userState) {
+                    is UiState.Loading -> HeaderSectionSkeleton()
+                    is UiState.Success -> {
+                        val user = (userState as UiState.Success).data
+                        HeaderSection(
+                            username = user.name,
+                            initial = profileViewModel.getInitials(user.name),
+                            email = user.email
+                        )
+                    }
+
+                    is UiState.Error -> {
+                        HeaderSectionSkeleton()
+                    }
+
+                    else -> {}
+                }
+            }
+            item {
+                when (userState) {
+                    is UiState.Loading -> NameEmailSkeleton()
+                    is UiState.Success -> {
+                        val user = (userState as UiState.Success).data
+                        LaunchedEffect(user) {
+                            usernameBackend = user.name
+                            emailBackend = user.email
+                        }
+                        NameEmailSection(
+                            username = usernameBackend,
+                            email = emailBackend,
+                            onValueChange = { usernameBackend = it },
+                            onValueEmailChange = { emailBackend = it }
+                        )
+                    }
+
+                    is UiState.Error -> {
+                        NameEmailSkeleton()
+                    }
+
+                    else -> {}
+                }
+            }
+            item {
+                ErrorField(
+                    errorMessage = updateUserDataErrorMessage,
+                    isVisible = updateUserDataState is UiState.Error
                 )
             }
             item {
-                NameEmailSection(
-                    username = username,
-                    email = email,
-                    onValueChange = { username = it }
-                )
+                if (isEdited) {
+                    DisabledButton(
+                        text = "Save Changes", isDisabled = false,
+                        isLoading = userState is UiState.Loading,
+                        modifier = Modifier.clickable {
+                            if (isNameEdited) {
+                                request["name"] = usernameBackend
+                            }
+                            if (isEmailEdited) {
+                                request["email"] = emailBackend
+                            }
+                            profileViewModel.updateUserData(
+                                request = request
+                            )
+                        }
+                    )
+                } else {
+                    DisabledButton(text = "No Change Have Been Made")
+                }
             }
             item {
                 HorizontalLine()
-
             }
             item {
                 ButtonsSection(
-                    onChangePasswordButtonClick = { onNavigateToChangePassword() },
-                    onSignOutButtonClick = { vm.logout() },
+                    onChangePasswordButtonClick = { onNavigateToChangePassword(userId) },
+                    onSignOutButtonClick = { authViewModel2.logout() },
                     isLogoutLoading = logoutState is UiState.Loading
                 )
             }

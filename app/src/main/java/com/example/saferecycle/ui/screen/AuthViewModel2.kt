@@ -103,6 +103,7 @@ class AuthViewModel2 @Inject constructor(
         viewModelScope.launch {
             _registerState.value = UiState.Loading
             val user = User(
+                id = 0,
                 name = name,
                 email = email,
                 password = password

@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.User
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.network.DataResult
 import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.data.repository.AuthRepository
 import com.example.saferecycle.data.repository.CategoryRepository
+import com.example.saferecycle.data.repository.UserRepository
 import com.example.saferecycle.data.repository.WasteRepository
+import com.example.saferecycle.ui.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -20,10 +23,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val wasteRepository: WasteRepository,
-    private val authRepository: AuthRepository
-
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
-    private val _user = MutableStateFlow<Resource<User>>(Resource.Idle())
+    private val _user = MutableStateFlow<UiState<User>>(UiState.Idle)
     val user = _user
 
     private val _categories =
@@ -38,11 +41,19 @@ class HomeViewModel @Inject constructor(
         MutableStateFlow<Resource<List<Waste>>>(Resource.Idle())
     val popularWastes = _popularWastes
 
-    fun getUserData(){
+    fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
-            _user.value = Resource.Loading()
-            delay(2000)
-            _user.value = authRepository.getUserData()
+            _user.value = UiState.Loading
+            when (val result = userRepository.getUserData()) {
+                is DataResult.Success -> {
+                    _user.value = UiState.Success(result.data)
+                }
+
+                is DataResult.Error -> {
+                    _user.value = UiState.Error(result.error)
+                }
+                else -> {}
+            }
         }
     }
 
@@ -68,5 +79,13 @@ class HomeViewModel @Inject constructor(
             delay(2000)
             _popularWastes.value = wasteRepository.getDummyPopularWaste()
         }
+    }
+
+    fun getInitials(name: String): String {
+        return name
+            .trim()
+            .split("\\s+".toRegex())      // pisah berdasarkan spasi berlebih
+            .filter { it.isNotEmpty() }
+            .take(2).joinToString("") { it.first().uppercase() }
     }
 }

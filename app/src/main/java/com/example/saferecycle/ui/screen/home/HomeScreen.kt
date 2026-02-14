@@ -1,5 +1,6 @@
 package com.example.saferecycle.ui.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -22,6 +23,7 @@ import com.example.saferecycle.ui.component.SearchField
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.ui.component.SearchFieldSkeleton
+import com.example.saferecycle.ui.state.UiState
 
 @Composable
 fun HomeScreen(
@@ -64,22 +66,26 @@ fun HomeScreen(
         ) {
             item {
                 when (userDataState) {
-                    is Resource.Loading -> HeaderSectionSkeleton()
-                    is Resource.Success -> {
-                        val user = (userDataState as Resource.Success).data
+                    is UiState.Loading -> HeaderSectionSkeleton()
+                    is UiState.Success -> {
+                        val user = (userDataState as UiState.Success).data
+                        Log.d("UserHeader","$user")
                         HeaderSection(
                             username = user.name,
-                            initial = "E",
-                            onInitialCardClick = { onNavigateToProfile() })
+                            initial = vm.getInitials(user.name),
+                            onInitialCardClick = { onNavigateToProfile() }
+                        )
                     }
-
+                    is UiState.Error -> {
+                        HeaderSectionSkeleton()
+                    }
                     else -> {}
                 }
             }
             item {
                 when (userDataState) {
-                    is Resource.Loading -> SearchFieldSkeleton()
-                    is Resource.Success -> {
+                    is UiState.Loading -> SearchFieldSkeleton()
+                    is UiState.Success -> {
                         SearchField(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(13.dp))
@@ -90,6 +96,9 @@ fun HomeScreen(
                                 .height(45.dp),
                             value = ""
                         )
+                    }
+                    is UiState.Error -> {
+                        SearchFieldSkeleton()
                     }
                     else -> {}
                 }
@@ -148,6 +157,7 @@ fun HomeScreen(
                             }
                         )
                     }
+
                     else -> {}
                 }
             }
