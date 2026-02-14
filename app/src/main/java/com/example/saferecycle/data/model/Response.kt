@@ -16,3 +16,9 @@ data class ErrorResponse(
 data class LogoutMessage(
     val message:String
 )
+
+data class BaseResponse<T>(
+    val status: String,
+    val message: String,
+    val data: T
+)

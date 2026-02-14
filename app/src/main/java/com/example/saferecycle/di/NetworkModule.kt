@@ -3,6 +3,7 @@ package com.example.saferecycle.di
 import com.example.saferecycle.data.network.SessionManager
 import com.example.saferecycle.data.network.TokenManager
 import com.example.saferecycle.data.network.api_service.AuthApiService
+import com.example.saferecycle.data.network.api_service.UserApiService
 import com.example.saferecycle.data.network.interceptor.AuthInterceptor
 import com.example.saferecycle.data.network.interceptor.TokenAuthenticator
 import dagger.Module
@@ -16,15 +17,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-
-
-
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.137.1:8000/api/"
+    private const val BASE_URL = "http://10.200.67.47:8000/api/"
 
     @Provides
     @Singleton
@@ -110,7 +107,12 @@ object NetworkModule {
     @Singleton
     fun provideAuthApi(
         @RefreshClient retrofit: Retrofit
-    ): AuthApiService =
-        retrofit.create(AuthApiService::class.java)
+    ): AuthApiService = retrofit.create(AuthApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserApi(
+        retrofit: Retrofit
+    ): UserApiService = retrofit.create(UserApiService::class.java)
 }
 

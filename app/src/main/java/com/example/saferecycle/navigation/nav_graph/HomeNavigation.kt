@@ -122,7 +122,13 @@ fun NavGraphBuilder.mainGraph(
     }
     composable<Profile> {
         ProfileScreen(
-            onNavigateToChangePassword = { navController.navigate(ChangePassword) },
+            onNavigateToChangePassword = { userId->
+                navController.navigate(
+                    ChangePassword(
+                        userId = userId
+                    )
+                )
+            },
             onNavigateToLogin = {
                 navController.navigate(Login) {
                     popUpTo(Home) {

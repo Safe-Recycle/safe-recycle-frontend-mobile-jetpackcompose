@@ -4,7 +4,6 @@ import com.example.saferecycle.data.model.AuthResponse
 import com.example.saferecycle.data.model.LogoutMessage
 import com.example.saferecycle.data.model.User
 import com.example.saferecycle.data.network.DataResult
-import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.data.network.SessionManager
 import com.example.saferecycle.data.network.TokenManager
 import com.example.saferecycle.data.network.api_service.AuthApiService

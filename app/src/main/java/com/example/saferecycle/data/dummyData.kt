@@ -5,6 +5,7 @@ import com.example.saferecycle.data.model.User
 import com.example.saferecycle.data.model.Waste
 
 val dummyUser = User(
+    id = 0,
     name = "Elma",
     email = "elmahanarokushou@gmail.com"
 )

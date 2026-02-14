@@ -1,5 +1,6 @@
 package com.example.saferecycle.ui.screen.change_password
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Column
@@ -8,30 +9,70 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.composables.icons.lucide.IdCard
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.composables.icons.lucide.KeyRound
 import com.composables.icons.lucide.Lock
 import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.Mail
+import com.example.saferecycle.data.model.ChangeUserPassword
+import com.example.saferecycle.ui.component.ErrorField
 import com.example.saferecycle.ui.component.NormalButton
 import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextField
 import com.example.saferecycle.ui.component.TopBar
+import com.example.saferecycle.ui.state.AppError
+import com.example.saferecycle.ui.state.UiState
 
 @Composable
 fun ChangePasswordScreen(
     onBackClick: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    vm: ChangePasswordViewModel = hiltViewModel()
 ) {
     var oldPassword by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confPassword by remember { mutableStateOf("") }
+    val updateUserPasswordState by vm.updateUserPassword.collectAsState()
+    var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    LaunchedEffect(updateUserPasswordState) {
+        when (updateUserPasswordState) {
+            is UiState.Success<*> -> {
+                val updatePasswordMessage =
+                    (updateUserPasswordState as UiState.Success<String>).data
+                Toast.makeText(
+                    context,
+                    updatePasswordMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            is UiState.Error -> {
+                errorMessage =
+                    when (val errorState =
+                        (updateUserPasswordState as UiState.Error).error) {
+                        is AppError.Network -> errorState.message
+                        is AppError.Server -> errorState.message
+                        is AppError.Unknown -> errorState.message
+                        is AppError.Forbidden -> errorState.message
+                        is AppError.NotFound -> errorState.message
+                        is AppError.Unauthorized -> errorState.message
+                        is AppError.Format -> errorState.message
+                    }
+            }
+
+            else -> {}
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -41,9 +82,10 @@ fun ChangePasswordScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier
-            .padding(innerPadding)
-            .padding(16.dp),
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp),
             verticalArrangement = spacedBy(40.dp)
         ) {
             item {
@@ -92,12 +134,25 @@ fun ChangePasswordScreen(
                             leadingIconContentDescription = "Icon for Re-enter New Password"
                         )
                     }
+                    ErrorField(
+                        errorMessage = errorMessage,
+                        isVisible = updateUserPasswordState is UiState.Error
+                    )
                 }
             }
-            item{
+            item {
                 NormalButton(
-                    onClick = { onNavigateToLogin() },
-                    text = "Change Password"
+                    onClick = {
+                        vm.changeUserPassword(
+                            ChangeUserPassword(
+                                oldPassword = oldPassword,
+                                newPassword = password,
+                                confirmPassword = confPassword
+                            )
+                        )
+                    },
+                    text = "Change Password",
+                    isLoading = updateUserPasswordState is UiState.Loading
                 )
             }
         }

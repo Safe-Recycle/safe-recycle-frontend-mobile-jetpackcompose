@@ -42,6 +42,7 @@ fun HeaderSection(
     initial: String,
     onInitialCardClick: () -> Unit
 ) {
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
