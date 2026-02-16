@@ -16,7 +16,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,8 +62,14 @@ fun WasteDetailsScreen(
     LaunchedEffect(Unit) {
         vm.getWasteDetails()
     }
-
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+    val sheetState = rememberStandardBottomSheetState(
+        skipHiddenState = false,
+        initialValue = SheetValue.PartiallyExpanded,
+        confirmValueChange = { newValue ->
+            newValue != SheetValue.Hidden // cegah hidden
+        }
+    )
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(sheetState)
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
