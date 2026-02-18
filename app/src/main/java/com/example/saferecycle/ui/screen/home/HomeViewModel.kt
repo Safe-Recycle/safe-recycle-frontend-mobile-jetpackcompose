@@ -29,9 +29,9 @@ class HomeViewModel @Inject constructor(
     private val _user = MutableStateFlow<UiState<User>>(UiState.Idle)
     val user = _user
 
-    private val _categories =
-        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
-    val categories = _categories
+//    private val _categories =
+//        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
+//    val categories = _categories
 
     private val _suggestedWastes =
         MutableStateFlow<Resource<List<Waste>>>(Resource.Idle())
@@ -40,6 +40,28 @@ class HomeViewModel @Inject constructor(
     private val _popularWastes =
         MutableStateFlow<Resource<List<Waste>>>(Resource.Idle())
     val popularWastes = _popularWastes
+
+    private val _categories =
+        MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
+    val categories = _categories
+
+    fun getCategories() {
+        _categories.value = UiState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = categoryRepository.getCategories()) {
+                is DataResult.Success -> {
+                    _categories.value = UiState.Success(result.data)
+                }
+
+                is DataResult.Error -> {
+                    val error = result.error
+                    _categories.value = UiState.Error(error)
+                }
+
+                is DataResult.Empty -> _categories.value = UiState.Empty
+            }
+        }
+    }
 
     fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -57,13 +79,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getDummyCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _categories.value = Resource.Loading()
-            delay(2000)
-            _categories.value = categoryRepository.getDummyCategory()
-        }
-    }
+//    fun getDummyCategories() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _categories.value = Resource.Loading()
+//            delay(2000)
+//            _categories.value = categoryRepository.getDummyCategory()
+//        }
+//    }
 
     fun getDummySuggestedWastes() {
         viewModelScope.launch(Dispatchers.IO) {

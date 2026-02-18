@@ -45,11 +45,23 @@ fun CategoryCard(
             ,contentAlignment = Alignment.Center,
         ) {
             AsyncImage(
-                model = category.imagePath,
+                model = formatImageUrl(category.imageLink),
                 contentDescription = "${category.name} Logo",
                 modifier = Modifier.size(42.dp)
             )
         }
         NormalText(text = category.name)
     }
+}
+
+private const val BASE_URL = "http://192.168.1.26:8000/"
+
+fun formatImageUrl(path: String?): String? {
+    if (path.isNullOrEmpty()) return null
+
+    val formattedPath = path
+        .replace("\\", "/")        // ubah backslash jadi slash
+        .removePrefix("/")         // jaga-jaga kalau ada slash depan
+
+    return BASE_URL + formattedPath
 }

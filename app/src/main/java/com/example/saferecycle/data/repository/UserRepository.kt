@@ -37,7 +37,6 @@ class UserRepository @Inject constructor(
                     request = request
                 )
             }
-        Log.d("Log from repo","$result")
         return result
     }
 
@@ -53,7 +52,6 @@ class UserRepository @Inject constructor(
                     request = request
                 )
             }
-        Log.d("Log from repo","$result")
         return when(result){
             is DataResult.Success<*> -> {
                 tokenManager.clear()

@@ -41,3 +41,4 @@ fun WasteCard(waste: Waste, onClick: () -> Unit) {
         }
     }
 }
+

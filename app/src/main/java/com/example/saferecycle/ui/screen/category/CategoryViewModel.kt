@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.network.DataResult
 import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.data.repository.CategoryRepository
 import com.example.saferecycle.data.repository.WasteRepository
+import com.example.saferecycle.ui.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,15 +20,36 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
+    //    private val _categories =
+//        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
+//    val categories = _categories
+//
+//    fun getDummyCategories() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _categories.value = Resource.Loading()
+//            delay(2000)
+//            _categories.value = categoryRepository.getDummyCategory()
+//        }
+//    }
     private val _categories =
-        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
+        MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
     val categories = _categories
 
-    fun getDummyCategories() {
+    fun getCategories() {
+        _categories.value = UiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            _categories.value = Resource.Loading()
-            delay(2000)
-            _categories.value = categoryRepository.getDummyCategory()
+            when (val result = categoryRepository.getCategories()) {
+                is DataResult.Success -> {
+                    _categories.value = UiState.Success(result.data)
+                }
+
+                is DataResult.Error -> {
+                    val error = result.error
+                    _categories.value = UiState.Error(error)
+                }
+
+                is DataResult.Empty -> _categories.value = UiState.Empty
+            }
         }
     }
 }

@@ -32,14 +32,14 @@ object AppModule {
 //        )
 //    }
 
-    @Provides
-    @Singleton
-    fun provideCategoryRepository(
-        @ApplicationContext
-        context: Context
-    ): CategoryRepository {
-        return CategoryRepository(context)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideCategoryRepository(
+//        @ApplicationContext
+//        context: Context
+//    ): CategoryRepository {
+//        return CategoryRepository(context)
+//    }
 
     @Provides
     @Singleton
