@@ -3,6 +3,7 @@ package com.example.saferecycle.di
 import com.example.saferecycle.data.network.SessionManager
 import com.example.saferecycle.data.network.TokenManager
 import com.example.saferecycle.data.network.api_service.AuthApiService
+import com.example.saferecycle.data.network.api_service.CategoryApiService
 import com.example.saferecycle.data.network.api_service.UserApiService
 import com.example.saferecycle.data.network.interceptor.AuthInterceptor
 import com.example.saferecycle.data.network.interceptor.TokenAuthenticator
@@ -21,7 +22,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.0.104:8000/api/"
+    private const val BASE_URL = "http://192.168.1.26:8000/api/"
 
     @Provides
     @Singleton
@@ -114,5 +115,11 @@ object NetworkModule {
     fun provideUserApi(
         retrofit: Retrofit
     ): UserApiService = retrofit.create(UserApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCategoryApi(
+        retrofit: Retrofit
+    ): CategoryApiService = retrofit.create(CategoryApiService::class.java)
 }
 

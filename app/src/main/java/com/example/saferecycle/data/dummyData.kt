@@ -16,62 +16,62 @@ val dummyCategories = mutableListOf(
     Category(
         id = 1,
         name = "Organic",
-        imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
+        imageLink = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
     ),
     Category(
         id = 2,
         name = "Plastic",
-        imagePath = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
+        imageLink = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
     ),
     Category(
         id = 3,
         name = "Metal",
-        imagePath = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
+        imageLink = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
     ),
     Category(
         id = 4,
         name = "Glass",
-        imagePath = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
+        imageLink = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
     ),
     Category(
         id = 5,
         name = "Paper",
-        imagePath = "https://cdn-icons-png.flaticon.com/512/737/737804.png"
+        imageLink = "https://cdn-icons-png.flaticon.com/512/737/737804.png"
     ),
     Category(
         id = 6,
         name = "Textile",
-        imagePath = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTtk-GfUMrASOkekz7Dh9f8HqJgy_G0F0Yt6ebD1FFnSQQn0n33"
+        imageLink = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTtk-GfUMrASOkekz7Dh9f8HqJgy_G0F0Yt6ebD1FFnSQQn0n33"
     ),
     Category(
         id = 7,
         name = "Hazardous",
-        imagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj3X4DPmPr0DSagT7OvGPtAdD6VBn7mXdwSw&s"
+        imageLink = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj3X4DPmPr0DSagT7OvGPtAdD6VBn7mXdwSw&s"
     ),
     Category(
         id = 8,
         name = "E-Waste",
-        imagePath = "https://cdn-icons-png.flaticon.com/128/11649/11649018.png"
+        imageLink = "https://cdn-icons-png.flaticon.com/128/11649/11649018.png"
     ),
     Category(
         id = 9,
         name = "Battery",
-        imagePath = "https://static.vecteezy.com/system/resources/thumbnails/002/846/995/small_2x/battery-cell-concepts-vector.jpg"
+        imageLink = "https://static.vecteezy.com/system/resources/thumbnails/002/846/995/small_2x/battery-cell-concepts-vector.jpg"
     ),
     Category(
         id = 10,
         name = "Styrofoam",
-        imagePath = "https://cdn-icons-png.flaticon.com/512/3765/3765611.png"
+        imageLink = "https://cdn-icons-png.flaticon.com/512/3765/3765611.png"
     ),
     Category(
         id = 11,
         name = "Mixed Waste",
-        imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1OsBfssqoUEgogDKLxpu67ipRxGOG2WJb7j1UXJMgGN3SWshX"
+        imageLink = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1OsBfssqoUEgogDKLxpu67ipRxGOG2WJb7j1UXJMgGN3SWshX"
     ),
     Category(
         id = 12,
         name = "Other",
-        imagePath = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcILyeqvMcg1lvgvbLKqYjyAPKj_vYWGpGNFIeG9wkIFq6Y0H1"
+        imageLink = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcILyeqvMcg1lvgvbLKqYjyAPKj_vYWGpGNFIeG9wkIFq6Y0H1"
     ),
 )
 
@@ -83,7 +83,7 @@ val dummyWastes: MutableList<Waste> = mutableListOf(
         category = Category(
             id = 3,
             name = "Metal",
-            imagePath = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
+            imageLink = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -128,7 +128,7 @@ Recycling metal cans:
         category = Category(
             id = 2,
             name = "Plastic",
-            imagePath = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
+            imageLink = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
         ),
         isReusable = true,
         isRecyclable = true,
@@ -169,7 +169,7 @@ Steps
         category = Category(
             id = 1,
             name = "Organic",
-            imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
+            imageLink = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -218,7 +218,7 @@ Composting food waste:
         category = Category(
             id = 1,
             name = "Organic",
-            imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
+            imageLink = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShrpwIrl1yqleJWOOKz37uPxRMmNkI9e8deU4AGgKRlbwu4fIv"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -258,7 +258,7 @@ Composting:
         category = Category(
             id = 2,
             name = "Plastic",
-            imagePath = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
+            imageLink = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTK5nXLSzAqErtGn_qoUvmAzxQ7rXkTHNpWrUo6R1e13Hht0ZLG"
         ),
         isReusable = true,
         isRecyclable = true,
@@ -298,7 +298,7 @@ Plastic bags:
         category = Category(
             id = 3,
             name = "Metal",
-            imagePath = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
+            imageLink = "https://cdn-icons-png.flaticon.com/128/8134/8134449.png"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -337,7 +337,7 @@ Steps:
         category = Category(
             id = 4,
             name = "Glass",
-            imagePath = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
+            imageLink = "https://cdn-icons-png.freepik.com/512/4246/4246817.png"
         ),
         isReusable = true,
         isRecyclable = true,
@@ -384,7 +384,7 @@ Steps:
         category = Category(
             id = 5,
             name = "Paper",
-            imagePath = "https://cdn-icons-png.flaticon.com/512/737/737804.png"
+            imageLink = "https://cdn-icons-png.flaticon.com/512/737/737804.png"
         ),
         isReusable = true,
         isRecyclable = true,
@@ -420,7 +420,7 @@ Steps:
         category = Category(
             id = 6,
             name = "Textile",
-            imagePath = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTtk-GfUMrASOkekz7Dh9f8HqJgy_G0F0Yt6ebD1FFnSQQn0n33"
+            imageLink = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTtk-GfUMrASOkekz7Dh9f8HqJgy_G0F0Yt6ebD1FFnSQQn0n33"
         ),
         isReusable = true,
         isRecyclable = true,
@@ -452,7 +452,7 @@ Recycling textiles reduces landfill waste significantly.
         category = Category(
             id = 7,
             name = "Hazardous",
-            imagePath = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj3X4DPmPr0DSagT7OvGPtAdD6VBn7mXdwSw&s"
+            imageLink = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj3X4DPmPr0DSagT7OvGPtAdD6VBn7mXdwSw&s"
         ),
         isReusable = false,
         isRecyclable = false,
@@ -478,7 +478,7 @@ Steps:
         category = Category(
             id = 8,
             name = "E-Waste",
-            imagePath = "https://cdn-icons-png.flaticon.com/128/11649/11649018.png"
+            imageLink = "https://cdn-icons-png.flaticon.com/128/11649/11649018.png"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -504,7 +504,7 @@ Recycling e-waste recovers metals and prevents pollution.
         category = Category(
             id = 9,
             name = "Battery",
-            imagePath = "https://static.vecteezy.com/system/resources/thumbnails/002/846/995/small_2x/battery-cell-concepts-vector.jpg"
+            imageLink = "https://static.vecteezy.com/system/resources/thumbnails/002/846/995/small_2x/battery-cell-concepts-vector.jpg"
         ),
         isReusable = false,
         isRecyclable = true,
@@ -530,7 +530,7 @@ Steps:
         category = Category(
             id = 10,
             name = "Styrofoam",
-            imagePath = "https://cdn-icons-png.flaticon.com/512/3765/3765611.png"
+            imageLink = "https://cdn-icons-png.flaticon.com/512/3765/3765611.png"
         ),
         isReusable = false,
         isRecyclable = false,
@@ -556,7 +556,7 @@ Reducing styrofoam use is the best solution.
         category = Category(
             id = 11,
             name = "Mixed Waste",
-            imagePath = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1OsBfssqoUEgogDKLxpu67ipRxGOG2WJb7j1UXJMgGN3SWshX"
+            imageLink = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ1OsBfssqoUEgogDKLxpu67ipRxGOG2WJb7j1UXJMgGN3SWshX"
         ),
         isReusable = false,
         isRecyclable = false,
@@ -582,7 +582,7 @@ Choosing recyclable packaging helps reduce mixed waste.
         category = Category(
             id = 12,
             name = "Other",
-            imagePath = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcILyeqvMcg1lvgvbLKqYjyAPKj_vYWGpGNFIeG9wkIFq6Y0H1"
+            imageLink = "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTcILyeqvMcg1lvgvbLKqYjyAPKj_vYWGpGNFIeG9wkIFq6Y0H1"
         ),
         isReusable = false,
         isRecyclable = false,

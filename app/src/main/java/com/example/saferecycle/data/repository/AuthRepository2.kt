@@ -40,6 +40,7 @@ class AuthRepository2 @Inject constructor(
 
         if (token.isNullOrEmpty() || refreshToken.isNullOrEmpty()) {
             tokenManager.clear()
+            sessionManager.logout()
             return DataResult.Empty
         } else {
             val request =
