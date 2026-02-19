@@ -1,25 +1,26 @@
 package com.example.saferecycle.ui.screen.scan_waste
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,16 +32,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.saferecycle.camera.CameraPreview
+import com.example.saferecycle.ui.component.LostConnectionBottomSheet
+import com.example.saferecycle.ui.component.NotIdentifiedBottomSheet
 import com.example.saferecycle.ui.component.TopBar
+import com.example.saferecycle.ui.state.AppError
+import com.example.saferecycle.ui.state.UiState
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.util.concurrent.Executor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScanWasteScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
+fun ScanWasteScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    vm: ScanWasteViewModel = hiltViewModel()
+) {
+    val scanWasteState by vm.scanWasteState.collectAsState()
+
     val applicationContext = LocalContext.current
+    var showNoInternetBottomSheet by remember { mutableStateOf(false) }
+    var showNotIdentifiedBottomSheet by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
     var isFlashOn by remember { mutableStateOf(false) }
     val controller = remember {
         LifecycleCameraController(applicationContext).apply {
@@ -52,11 +72,49 @@ fun ScanWasteScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
-            uri -> selectedImageUri = uri
-            Log.d("Camera X" ,"Selected Picture in $selectedImageUri")
+        onResult = { uri ->
+            selectedImageUri = uri
+            Log.d("Camera X", "Selected Picture in $selectedImageUri")
         }
     )
+
+    LaunchedEffect(selectedImageUri) {
+        if (selectedImageUri!=null){
+            val multipart = selectedImageUri!!.toMultipart(applicationContext, "file")
+            vm.scanWaste(multipart)
+        }
+    }
+
+    LaunchedEffect(scanWasteState) {
+        when(scanWasteState){
+            is UiState.Success -> {
+                val data = (scanWasteState as UiState.Success).data
+                Log.d("SCAN SUCCESS","${data.id}")
+            }
+
+            is UiState.Error -> {
+                val error = (scanWasteState as UiState.Error).error
+                when(error){
+                    is AppError.Network -> showNoInternetBottomSheet = true
+                    is AppError.NotFound-> showNotIdentifiedBottomSheet = true
+                    else -> {
+                        showNotIdentifiedBottomSheet = true
+
+                    }
+                }
+//                if(error !is AppError.Network && error !is AppError.NotFound){
+//                    Toast.makeText(
+//                        context,
+//                        errorMessage,
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+////                    showNotIdentifiedBottomSheet = true
+//                }
+            }
+            is UiState.Loading -> {}
+            else -> {}
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -98,6 +156,9 @@ fun ScanWasteScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
                                 "Camera X",
                                 "Saved Picture in $uri"
                             )
+                            val multipart =
+                                uri.toMultipart(applicationContext, "file")
+                            vm.scanWaste(multipart)
                         },
                         applicationContext = applicationContext
                     )
@@ -108,7 +169,32 @@ fun ScanWasteScreen(modifier: Modifier = Modifier, onBackClick: () -> Unit) {
                     )
                 }
             )
+            if (scanWasteState is UiState.Loading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = SafeRecycleTheme.colors.elementBackground
+                    )
+                }
+            }
         }
+    }
+
+    if (showNoInternetBottomSheet) {
+        LostConnectionBottomSheet(
+            onTryAgainClick = { showNoInternetBottomSheet = false },
+            onDismissRequest = { showNoInternetBottomSheet = false }
+        )
+    }
+    if (showNotIdentifiedBottomSheet) {
+        NotIdentifiedBottomSheet(
+            onTryAgainClick = { showNotIdentifiedBottomSheet = false },
+            onDismissRequest = { showNotIdentifiedBottomSheet = false }
+        )
     }
 }
 
@@ -144,3 +230,37 @@ private fun takeSavePhoto(
         }
     )
 }
+
+fun Uri.toMultipart(context: Context, partName: String): MultipartBody.Part {
+    val contentResolver = context.contentResolver
+
+    val fileName = "upload_${System.currentTimeMillis()}.jpg"
+    val tempFile = File(context.cacheDir, fileName)
+
+    contentResolver.openInputStream(this)?.use { inputStream ->
+        tempFile.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+    }
+
+    val requestFile = tempFile
+        .asRequestBody("image/jpeg".toMediaType())
+
+    return MultipartBody.Part.createFormData(
+        partName,
+        tempFile.name,
+        requestFile
+    )
+}
+
+//fun Uri.toMultipart(context: Context, partName: String): MultipartBody.Part {
+//    val file = File(this.path!!)
+//
+//    val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+//
+//    return MultipartBody.Part.createFormData(
+//        partName,
+//        file.name,
+//        requestFile
+//    )
+//}
