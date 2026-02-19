@@ -22,3 +22,11 @@ data class BaseResponse<T>(
     val message: String,
     val data: T
 )
+
+
+data class ScanWasteResponse(
+    val status:String?,
+    val message: String?,
+    val name:String?,
+    val id:Int?
+)

@@ -36,7 +36,11 @@ import com.composables.icons.lucide.Search
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 
 @Composable
-fun ShutterButton(modifier: Modifier = Modifier, onCLick: () -> Unit) {
+fun ShutterButton(
+    modifier: Modifier = Modifier,
+    onCLick: () -> Unit,
+    enabled: Boolean = true,
+) {
     Box(
         modifier = Modifier
             .background(
@@ -45,7 +49,7 @@ fun ShutterButton(modifier: Modifier = Modifier, onCLick: () -> Unit) {
             )
             .padding(6.dp)
             .clip(CircleShape)
-            .clickable { onCLick() }
+            .clickable(enabled = enabled) { onCLick() }
     ) {
         Box(
             modifier = Modifier
