@@ -3,7 +3,6 @@ package com.example.saferecycle.ui.screen.scan_waste
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,7 +40,6 @@ import com.example.saferecycle.ui.state.AppError
 import com.example.saferecycle.ui.state.UiState
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
@@ -49,6 +47,7 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScanWasteScreen(
+    onNavigateToWasteDetailsScreen:(Int) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     vm: ScanWasteViewModel = hiltViewModel()
@@ -89,10 +88,13 @@ fun ScanWasteScreen(
         when(scanWasteState){
             is UiState.Success -> {
                 val data = (scanWasteState as UiState.Success).data
+                onNavigateToWasteDetailsScreen(data.id!!)
+                vm.clearState()
                 Log.d("SCAN SUCCESS","${data.id}")
             }
 
             is UiState.Error -> {
+                selectedImageUri = null
                 val error = (scanWasteState as UiState.Error).error
                 when(error){
                     is AppError.Network -> showNoInternetBottomSheet = true
@@ -102,14 +104,6 @@ fun ScanWasteScreen(
 
                     }
                 }
-//                if(error !is AppError.Network && error !is AppError.NotFound){
-//                    Toast.makeText(
-//                        context,
-//                        errorMessage,
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-////                    showNotIdentifiedBottomSheet = true
-//                }
             }
             is UiState.Loading -> {}
             else -> {}
@@ -252,15 +246,3 @@ fun Uri.toMultipart(context: Context, partName: String): MultipartBody.Part {
         requestFile
     )
 }
-
-//fun Uri.toMultipart(context: Context, partName: String): MultipartBody.Part {
-//    val file = File(this.path!!)
-//
-//    val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-//
-//    return MultipartBody.Part.createFormData(
-//        partName,
-//        file.name,
-//        requestFile
-//    )
-//}

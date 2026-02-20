@@ -3,13 +3,17 @@ package com.example.saferecycle.data.repository
 import android.content.Context
 import com.example.saferecycle.data.dummyWastes
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.network.DataResult
 import com.example.saferecycle.data.network.Resource
+import com.example.saferecycle.data.network.api_service.UserApiService
+import com.example.saferecycle.data.network.api_service.WasteApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class WasteRepository @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+    @ApplicationContext private val context: Context,
+    private val api: WasteApiService,
+) : BaseRepository() {
     suspend fun getDummySuggestedWaste(): Resource<List<Waste>> {
         return try {
             Resource.Success(dummyWastes)
@@ -76,7 +80,7 @@ class WasteRepository @Inject constructor(
         }
     }
 
-    suspend fun getWasteDetails(wasteId: Int): Resource<Waste> {
+    suspend fun getWasteDetailsDummy(wasteId: Int): Resource<Waste> {
         return try {
             Resource.Success(dummyWastes[wasteId - 1])
         } catch (e: Exception) {
@@ -84,4 +88,21 @@ class WasteRepository @Inject constructor(
         }
 
     }
+
+    suspend fun getWasteDetails(wasteId: Int): DataResult<Waste> {
+        val result = safeApiCall { api.getWasteDetails(wasteId) }
+        return when(result){
+            is DataResult.Success -> {
+                DataResult.Success(result.data.data)
+            }
+            is DataResult.Error -> {
+                DataResult.Error(result.error)
+            }
+            else -> {
+                DataResult.Empty
+            }
+        }
+
+    }
+
 }

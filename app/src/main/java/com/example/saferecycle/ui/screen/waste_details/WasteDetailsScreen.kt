@@ -17,13 +17,18 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -34,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.saferecycle.data.model.Waste
-import com.example.saferecycle.data.dummyWastes
 import com.example.saferecycle.ui.component.CategoryCard
 import com.example.saferecycle.ui.component.HorizontalLine
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
@@ -44,12 +48,13 @@ import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.ui.component.BoldedText
 import com.example.saferecycle.ui.component.BoldedTextSkeleton
 import com.example.saferecycle.ui.component.CategoryCardSkeleton
+import com.example.saferecycle.ui.component.LostConnectionBottomSheet
 import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.SecondaryTextSkeleton
-import com.example.saferecycle.ui.screen.waste_list.WasteListViewModel
+import com.example.saferecycle.ui.component.formatImageUrl
+import com.example.saferecycle.ui.state.UiState
 import dev.jeziellago.compose.markdowntext.MarkdownText
-import okhttp3.Response
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,8 +64,13 @@ fun WasteDetailsScreen(
     vm: WasteDetailsViewModel = hiltViewModel()
 ) {
     val wasteDetailsState by vm.wasteDetails.collectAsState()
+    val state = rememberPullToRefreshState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+
     LaunchedEffect(Unit) {
-        vm.getWasteDetails()
+        vm.getWasteDetails(wasteId)
+//        vm.getWasteDetailsDummy()
     }
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
@@ -70,67 +80,91 @@ fun WasteDetailsScreen(
         }
     )
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(sheetState)
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        sheetPeekHeight = 500.dp,
-        sheetDragHandle = {
-            BottomSheetDefaults.DragHandle(
-                width = 83.dp,
-                color = SafeRecycleTheme.colors.foreground.copy(alpha = 0.12f)
+    PullToRefreshBox(
+        isRefreshing = wasteDetailsState is UiState.Loading,
+        onRefresh = { vm.getWasteDetails(wasteId) },
+        state = state,
+        indicator = {
+            Indicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                isRefreshing = wasteDetailsState is UiState.Loading,
+                containerColor = SafeRecycleTheme.colors.background,
+                color = SafeRecycleTheme.colors.accent,
+                state = state
             )
-        },
-        sheetContent = {
-            when (wasteDetailsState) {
-                is Resource.Loading<*> -> SheetContentSkeleton()
-                is Resource.Success<*> -> {
-                    val wasteDetails =
-                        (wasteDetailsState as Resource.Success).data
-                    SheetContent(waste = wasteDetails)
+        }
+    ){
+        BottomSheetScaffold(
+            scaffoldState = bottomSheetScaffoldState,
+            sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            sheetPeekHeight = 500.dp,
+            sheetDragHandle = {
+                BottomSheetDefaults.DragHandle(
+                    width = 83.dp,
+                    color = SafeRecycleTheme.colors.foreground.copy(alpha = 0.12f)
+                )
+            },
+            sheetContent = {
+                when (wasteDetailsState) {
+                    is UiState.Loading -> SheetContentSkeleton()
+                    is UiState.Success -> {
+                        val wasteDetails =
+                            (wasteDetailsState as UiState.Success).data
+                        SheetContent(waste = wasteDetails)
+                    }
+
+                    else -> {}
                 }
-
-                else -> {}
-            }
-        },
-        sheetContainerColor = SafeRecycleTheme.colors.background,
-    ) {
-        when (wasteDetailsState) {
-            is Resource.Loading<*> -> {
-                Box(
-                    modifier = Modifier
-                        .padding(0.dp)
-                        .background(
-                            color = SafeRecycleTheme.colors.stroke,
-                            shape = RectangleShape
-                        ).size(500.dp)
-                        .fillMaxWidth()
-                )
-                WasteDetailsBackClickIconButton(
-                    modifier = Modifier.statusBarsPadding(),
-                    onBackClick = { onBackClick() }
-                )
-            }
-
-            is Resource.Success<*> -> {
-                val wasteDetails = (wasteDetailsState as Resource.Success).data
-                Box {
-                    AsyncImage(
+            },
+            sheetContainerColor = SafeRecycleTheme.colors.background,
+        ) {
+            when (wasteDetailsState) {
+                is UiState.Loading -> {
+                    Box(
                         modifier = Modifier
                             .padding(0.dp)
-                            .fillMaxWidth(),
-                        model = wasteDetails.imagePath,
-                        contentDescription = "Image for ${wasteDetails.name}"
+                            .background(
+                                color = SafeRecycleTheme.colors.stroke,
+                                shape = RectangleShape
+                            )
+                            .size(500.dp)
+                            .fillMaxWidth()
                     )
                     WasteDetailsBackClickIconButton(
                         modifier = Modifier.statusBarsPadding(),
                         onBackClick = { onBackClick() }
                     )
                 }
+
+                is UiState.Success -> {
+                    val wasteDetails =
+                        (wasteDetailsState as UiState.Success).data
+                    Box {
+                        AsyncImage(
+                            modifier = Modifier
+                                .padding(0.dp)
+                                .fillMaxWidth(),
+                            model = formatImageUrl(wasteDetails.imagePath),
+                            contentDescription = "Image for ${wasteDetails.name}"
+                        )
+                        WasteDetailsBackClickIconButton(
+                            modifier = Modifier.statusBarsPadding(),
+                            onBackClick = { onBackClick() }
+                        )
+                    }
+                }
+                else -> {}
             }
-
-            else -> {}
         }
-
+        if (showBottomSheet) {
+            LostConnectionBottomSheet(
+                onTryAgainClick = {
+                    vm.getWasteDetails(wasteId)
+                    showBottomSheet = false
+                },
+                onDismissRequest = { showBottomSheet = false }
+            )
+        }
     }
 }
 
