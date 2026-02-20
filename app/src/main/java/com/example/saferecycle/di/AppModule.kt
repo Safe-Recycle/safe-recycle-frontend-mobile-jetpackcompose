@@ -41,12 +41,12 @@ object AppModule {
 //        return CategoryRepository(context)
 //    }
 
-    @Provides
-    @Singleton
-    fun provideWasteRepository(
-        @ApplicationContext
-        context: Context
-    ): WasteRepository {
-        return WasteRepository(context)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideWasteRepository(
+//        @ApplicationContext
+//        context: Context
+//    ): WasteRepository {
+//        return WasteRepository(context)
+//    }
 }

@@ -16,7 +16,7 @@ data class Waste(
     val isRecyclable: Boolean,
     @SerializedName("is_hazardous")
     val isHazardous: Boolean,
-    val imagePath: String?=null,
-    val categoryId:Int? = null,
+    @SerializedName("image_link")
+    val imagePath: String,
     val category: Category,
 )

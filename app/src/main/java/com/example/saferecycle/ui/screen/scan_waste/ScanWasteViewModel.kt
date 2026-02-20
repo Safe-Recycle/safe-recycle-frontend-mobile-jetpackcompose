@@ -41,4 +41,6 @@ class ScanWasteViewModel @Inject constructor(
         }
     }
 
+    fun clearState(){ _scanWasteState.value = UiState.Idle }
+
 }

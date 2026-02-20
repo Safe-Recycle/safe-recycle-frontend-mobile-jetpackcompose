@@ -122,7 +122,7 @@ fun NavGraphBuilder.mainGraph(
     }
     composable<Profile> {
         ProfileScreen(
-            onNavigateToChangePassword = { userId->
+            onNavigateToChangePassword = { userId ->
                 navController.navigate(
                     ChangePassword(
                         userId = userId
@@ -147,6 +147,11 @@ fun NavGraphBuilder.mainGraph(
         )
     }
     composable<ScanWaste> {
-        ScanWasteScreen(onBackClick = { navController.navigateUp() })
+        ScanWasteScreen(
+            onBackClick = { navController.navigateUp() },
+            onNavigateToWasteDetailsScreen = { wasteId ->
+                navController.navigate(WasteDetails(wasteId))
+            }
+        )
     }
 }
