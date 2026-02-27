@@ -30,3 +30,18 @@ data class ScanWasteResponse(
     val name:String?,
     val id:Int?
 )
+
+data class ShowItemResponse(
+    val status: String,
+    val data: List<WasteThumbnail>,
+    val meta: MetaPagination
+)
+
+data class MetaPagination(
+    val page:Int,
+    val limit:Int,
+    @SerializedName("total_items")
+    val totalItems:Int,
+    @SerializedName("total_pages")
+    val totalPages:Int
+)

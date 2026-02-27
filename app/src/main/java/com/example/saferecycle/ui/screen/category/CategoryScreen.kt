@@ -1,6 +1,7 @@
 package com.example.saferecycle.ui.screen.category
 
 import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -74,7 +75,7 @@ fun CategoryScreen(
         ) {
             LazyVerticalGrid(
                 modifier = Modifier
-                    .padding(16.dp),
+                    .padding(16.dp).fillMaxSize(),
                 columns = GridCells.Adaptive(minSize = 75.dp),
                 horizontalArrangement = spacedBy(17.dp),
                 verticalArrangement = spacedBy(31.dp)
@@ -94,7 +95,7 @@ fun CategoryScreen(
                                 category = category,
                                 onClick = {
                                     onNavigateToCategoryWasteList(
-                                        "${category.name} Category",
+                                        category.name,
                                         category.id
                                     )
                                 }

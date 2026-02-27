@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.User
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.model.WasteThumbnail
+import com.example.saferecycle.data.model.WasteThumbnailPopular
 import com.example.saferecycle.data.network.DataResult
 import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.data.repository.AuthRepository
@@ -23,27 +25,41 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val wasteRepository: WasteRepository,
-    private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _user = MutableStateFlow<UiState<User>>(UiState.Idle)
     val user = _user
 
-//    private val _categories =
-//        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
-//    val categories = _categories
+    private var _userId = MutableStateFlow(0)
+    val userId = _userId
 
-    private val _suggestedWastes =
-        MutableStateFlow<Resource<List<Waste>>>(Resource.Idle())
+    private val _categories = MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
+    val categories = _categories
+
+    private val _suggestedWastes = MutableStateFlow<UiState<List<WasteThumbnail>>>(UiState.Idle)
     val suggestedWastes = _suggestedWastes
 
-    private val _popularWastes =
-        MutableStateFlow<Resource<List<Waste>>>(Resource.Idle())
+    private val _popularWastes = MutableStateFlow<UiState<List<WasteThumbnail>>>(UiState.Idle)
     val popularWastes = _popularWastes
 
-    private val _categories =
-        MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
-    val categories = _categories
+
+    fun getUserData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _user.value = UiState.Loading
+            when (val result = userRepository.getUserData()) {
+                is DataResult.Success -> {
+                    _user.value = UiState.Success(result.data)
+                    _userId.value = result.data.id
+                }
+
+                is DataResult.Error -> {
+                    _user.value = UiState.Error(result.error)
+                }
+
+                else -> {}
+            }
+        }
+    }
 
     fun getCategories() {
         _categories.value = UiState.Loading
@@ -63,18 +79,39 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getUserData() {
+    fun getSuggestedWaste() {
+        _suggestedWastes.value = UiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            _user.value = UiState.Loading
-            when (val result = userRepository.getUserData()) {
+            when (val result = wasteRepository.getSuggestedWaste(_userId.value)) {
                 is DataResult.Success -> {
-                    _user.value = UiState.Success(result.data)
+                    _suggestedWastes.value = UiState.Success(result.data)
+                }
+                is DataResult.Error -> {
+                    _suggestedWastes.value = UiState.Error(result.error)
+
+                }
+                is DataResult.Empty -> {
+                    _suggestedWastes.value = UiState.Empty
                 }
 
-                is DataResult.Error -> {
-                    _user.value = UiState.Error(result.error)
+            }
+        }
+    }
+
+    fun getPopularWaste() {
+        _popularWastes.value = UiState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            when(val result = wasteRepository.getPopularWaste()){
+                is DataResult.Success -> {
+                    _popularWastes.value = UiState.Success(result.data)
                 }
-                else -> {}
+                is DataResult.Error -> {
+                    _popularWastes.value = UiState.Error(result.error)
+
+                }
+                is DataResult.Empty -> {
+                    _popularWastes.value = UiState.Empty
+                }
             }
         }
     }
@@ -87,21 +124,21 @@ class HomeViewModel @Inject constructor(
 //        }
 //    }
 
-    fun getDummySuggestedWastes() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _suggestedWastes.value = Resource.Loading()
-            delay(2000)
-            _suggestedWastes.value = wasteRepository.getDummySuggestedWaste()
-        }
-    }
-
-    fun getDummyPopularWastes() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _popularWastes.value = Resource.Loading()
-            delay(2000)
-            _popularWastes.value = wasteRepository.getDummyPopularWaste()
-        }
-    }
+//    fun getDummySuggestedWastes() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _suggestedWastes.value = Resource.Loading()
+//            delay(2000)
+//            _suggestedWastes.value = wasteRepository.getDummySuggestedWaste()
+//        }
+//    }
+//
+//    fun getDummyPopularWastes() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _popularWastes.value = Resource.Loading()
+//            delay(2000)
+//            _popularWastes.value = wasteRepository.getDummyPopularWaste()
+//        }
+//    }
 
     fun getInitials(name: String): String {
         return name

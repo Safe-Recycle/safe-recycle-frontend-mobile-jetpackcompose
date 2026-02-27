@@ -4,6 +4,7 @@ import com.example.saferecycle.data.network.SessionManager
 import com.example.saferecycle.data.network.TokenManager
 import com.example.saferecycle.data.network.api_service.AuthApiService
 import com.example.saferecycle.data.network.api_service.CategoryApiService
+import com.example.saferecycle.data.network.api_service.HistoryApiService
 import com.example.saferecycle.data.network.api_service.ScanApiService
 import com.example.saferecycle.data.network.api_service.UserApiService
 import com.example.saferecycle.data.network.api_service.WasteApiService
@@ -25,7 +26,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.100.73:8000/api/"
+    private const val BASE_URL = "http://192.168.110.207:8000/api/"
 
     @Provides
     @Singleton
@@ -136,5 +137,11 @@ object NetworkModule {
     fun provideWasteDetailsApi(
         retrofit: Retrofit
     ): WasteApiService = retrofit.create(WasteApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideHistoryApi(
+        retrofit: Retrofit
+    ): HistoryApiService = retrofit.create(HistoryApiService::class.java)
 }
 

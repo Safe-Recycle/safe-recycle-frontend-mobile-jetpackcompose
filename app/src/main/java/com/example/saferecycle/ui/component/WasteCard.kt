@@ -14,9 +14,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.model.WasteThumbnail
+import com.example.saferecycle.data.model.WasteThumbnailPopular
 
 @Composable
-fun WasteCard(waste: Waste, onClick: () -> Unit) {
+fun WasteCard(waste: WasteThumbnail, onClick: () -> Unit) {
     val shape = RoundedCornerShape(13.dp)
 
     Column(
@@ -31,7 +33,34 @@ fun WasteCard(waste: Waste, onClick: () -> Unit) {
             modifier = Modifier
                 .size(163.dp)
                 .clip(shape),
-            model = waste.imagePath,
+            model = formatImageUrl(waste.imageLink),
+            contentDescription = "${waste.name} Image",
+            contentScale = ContentScale.Crop
+        )
+        Column {
+            NormalText(text = waste.name)
+            SecondaryText(text = waste.categoryName)
+        }
+    }
+}
+
+@Composable
+fun WasteCardPopular(waste: WasteThumbnailPopular, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(13.dp)
+
+    Column(
+        modifier = Modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onClick() },
+        verticalArrangement = spacedBy(11.dp)
+    ) {
+        AsyncImage(
+            modifier = Modifier
+                .size(163.dp)
+                .clip(shape),
+            model = formatImageUrl(waste.imageLink),
             contentDescription = "${waste.name} Image",
             contentScale = ContentScale.Crop
         )
@@ -41,4 +70,3 @@ fun WasteCard(waste: Waste, onClick: () -> Unit) {
         }
     }
 }
-

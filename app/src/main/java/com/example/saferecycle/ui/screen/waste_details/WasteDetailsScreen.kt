@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -53,6 +54,7 @@ import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.SecondaryTextSkeleton
 import com.example.saferecycle.ui.component.formatImageUrl
+import com.example.saferecycle.ui.state.AppError
 import com.example.saferecycle.ui.state.UiState
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -72,6 +74,16 @@ fun WasteDetailsScreen(
         vm.getWasteDetails(wasteId)
 //        vm.getWasteDetailsDummy()
     }
+
+    LaunchedEffect(wasteDetailsState) {
+        if (wasteDetailsState is UiState.Error) {
+            val error = (wasteDetailsState as UiState.Error).error
+            if (error is AppError.Network) {
+                showBottomSheet = true
+            }
+        }
+    }
+
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
         initialValue = SheetValue.PartiallyExpanded,
@@ -80,93 +92,101 @@ fun WasteDetailsScreen(
         }
     )
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(sheetState)
-    PullToRefreshBox(
-        isRefreshing = wasteDetailsState is UiState.Loading,
-        onRefresh = { vm.getWasteDetails(wasteId) },
-        state = state,
-        indicator = {
-            Indicator(
-                modifier = Modifier.align(Alignment.TopCenter),
-                isRefreshing = wasteDetailsState is UiState.Loading,
-                containerColor = SafeRecycleTheme.colors.background,
-                color = SafeRecycleTheme.colors.accent,
-                state = state
-            )
-        }
-    ){
-        BottomSheetScaffold(
-            scaffoldState = bottomSheetScaffoldState,
-            sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            sheetPeekHeight = 500.dp,
-            sheetDragHandle = {
-                BottomSheetDefaults.DragHandle(
-                    width = 83.dp,
-                    color = SafeRecycleTheme.colors.foreground.copy(alpha = 0.12f)
-                )
-            },
-            sheetContent = {
-                when (wasteDetailsState) {
-                    is UiState.Loading -> SheetContentSkeleton()
-                    is UiState.Success -> {
-                        val wasteDetails =
-                            (wasteDetailsState as UiState.Success).data
-                        SheetContent(waste = wasteDetails)
-                    }
 
-                    else -> {}
-                }
-            },
-            sheetContainerColor = SafeRecycleTheme.colors.background,
-        ) {
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        sheetPeekHeight = 500.dp,
+        sheetDragHandle = {
+            BottomSheetDefaults.DragHandle(
+                width = 83.dp,
+                color = SafeRecycleTheme.colors.foreground.copy(alpha = 0.12f)
+            )
+        },
+        sheetContent = {
             when (wasteDetailsState) {
-                is UiState.Loading -> {
-                    Box(
+                is UiState.Loading -> SheetContentSkeleton()
+                is UiState.Success -> {
+                    val wasteDetails =
+                        (wasteDetailsState as UiState.Success).data
+                    SheetContent(waste = wasteDetails)
+                }
+
+                is UiState.Error -> {
+                    SheetContentSkeleton()
+                }
+
+                else -> {}
+            }
+        },
+        sheetContainerColor = SafeRecycleTheme.colors.background,
+    ) {
+        when (wasteDetailsState) {
+            is UiState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .background(
+                            color = SafeRecycleTheme.colors.stroke,
+                            shape = RectangleShape
+                        )
+                        .fillMaxSize()
+                )
+                WasteDetailsBackClickIconButton(
+                    modifier = Modifier.statusBarsPadding(),
+                    onBackClick = { onBackClick() }
+                )
+            }
+
+            is UiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .background(
+                            color = SafeRecycleTheme.colors.stroke,
+                            shape = RectangleShape
+                        )
+                        .size(500.dp)
+                        .fillMaxWidth()
+                )
+                WasteDetailsBackClickIconButton(
+                    modifier = Modifier.statusBarsPadding(),
+                    onBackClick = { onBackClick() }
+                )
+            }
+
+            is UiState.Success -> {
+                val wasteDetails =
+                    (wasteDetailsState as UiState.Success).data
+                Box {
+                    AsyncImage(
                         modifier = Modifier
                             .padding(0.dp)
-                            .background(
-                                color = SafeRecycleTheme.colors.stroke,
-                                shape = RectangleShape
-                            )
-                            .size(500.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        model = formatImageUrl(wasteDetails.imagePath),
+                        contentDescription = "Image for ${wasteDetails.name}"
                     )
                     WasteDetailsBackClickIconButton(
                         modifier = Modifier.statusBarsPadding(),
                         onBackClick = { onBackClick() }
                     )
                 }
-
-                is UiState.Success -> {
-                    val wasteDetails =
-                        (wasteDetailsState as UiState.Success).data
-                    Box {
-                        AsyncImage(
-                            modifier = Modifier
-                                .padding(0.dp)
-                                .fillMaxWidth(),
-                            model = formatImageUrl(wasteDetails.imagePath),
-                            contentDescription = "Image for ${wasteDetails.name}"
-                        )
-                        WasteDetailsBackClickIconButton(
-                            modifier = Modifier.statusBarsPadding(),
-                            onBackClick = { onBackClick() }
-                        )
-                    }
-                }
-                else -> {}
             }
-        }
-        if (showBottomSheet) {
-            LostConnectionBottomSheet(
-                onTryAgainClick = {
-                    vm.getWasteDetails(wasteId)
-                    showBottomSheet = false
-                },
-                onDismissRequest = { showBottomSheet = false }
-            )
+
+            else -> {}
         }
     }
+    if (showBottomSheet) {
+        LostConnectionBottomSheet(
+            onTryAgainClick = {
+                vm.getWasteDetails(wasteId)
+                showBottomSheet = false
+            },
+            onDismissRequest = { showBottomSheet = false }
+        )
+    }
 }
+
 
 @Composable
 private fun SheetContent(waste: Waste) {

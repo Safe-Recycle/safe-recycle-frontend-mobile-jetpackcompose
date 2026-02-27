@@ -7,13 +7,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.saferecycle.ui.screen.categorized_waste_list.CategorizedWasteListScreen
 import com.example.saferecycle.ui.screen.category.CategoryScreen
 import com.example.saferecycle.ui.screen.home.HomeScreen
 import com.example.saferecycle.ui.screen.profile.ProfileScreen
 import com.example.saferecycle.ui.screen.scan_waste.ScanWasteScreen
 import com.example.saferecycle.ui.screen.search.SearchScreen
 import com.example.saferecycle.ui.screen.waste_details.WasteDetailsScreen
-import com.example.saferecycle.ui.screen.waste_list.WasteListScreen
+import com.example.saferecycle.ui.screen.suggested_popular_waste_list.WasteListScreen
+import com.example.saferecycle.ui.screen.suggested_popular_waste_list.WasteListSource
 
 @Serializable
 object Home
@@ -24,7 +26,9 @@ object Category
 @Serializable
 data class WasteList(
     val source: String,
-    val categoryId: Int? = null
+    val categoryId: Int? = null,
+    val wasteListSource: WasteListSource,
+    val userId:Int
 ) {
     companion object {
         fun from(savedStateHandle: SavedStateHandle) =
@@ -39,6 +43,17 @@ data class WasteDetails(
     companion object {
         fun from(savedStateHandle: SavedStateHandle) =
             savedStateHandle.toRoute<WasteDetails>()
+    }
+}
+
+@Serializable
+data class CategorizedWasteList(
+    val categoryId: Int,
+    val categoryName: String
+) {
+    companion object {
+        fun from(savedStateHandle: SavedStateHandle) =
+            savedStateHandle.toRoute<CategorizedWasteList>()
     }
 }
 
@@ -60,19 +75,31 @@ fun NavGraphBuilder.mainGraph(
                 navController.navigate(Category)
             },
             onNavigateToSearch = { navController.navigate(Search) },
-            onNavigateToCategoryWasteList = { source, categoryId ->
+            onNavigateToCategoryWasteList = { categoryName, categoryId ->
                 navController.navigate(
-                    WasteList(
-                        source = source,
+                    CategorizedWasteList(
+                        categoryName = categoryName,
                         categoryId = categoryId
                     )
                 )
             },
-            onNavigateToSuggestedWasteList = { source ->
-                navController.navigate(WasteList(source = source))
+            onNavigateToSuggestedWasteList = { source, userId ->
+                navController.navigate(
+                    WasteList(
+                        source = source,
+                        userId = userId,
+                        wasteListSource = WasteListSource.Suggested
+                    )
+                )
             },
-            onNavigateToPopularWasteList = { source ->
-                navController.navigate(WasteList(source = source))
+            onNavigateToPopularWasteList = { source, userId ->
+                navController.navigate(
+                    WasteList(
+                        source = source,
+                        userId = userId,
+                        wasteListSource = WasteListSource.Popular
+                    )
+                )
             },
             onNavigateToDetailWaste = { wasteId ->
                 navController.navigate(WasteDetails(wasteId = wasteId))
@@ -84,20 +111,33 @@ fun NavGraphBuilder.mainGraph(
         )
     }
     composable<Category> { from: NavBackStackEntry ->
-        CategoryScreen(onNavigateToCategoryWasteList = { source, categoryId ->
-            navController.navigate(
-                WasteList(
-                    source = source,
-                    categoryId = categoryId
+        CategoryScreen(
+            onNavigateToCategoryWasteList = { categoryName, categoryId ->
+                navController.navigate(
+                    CategorizedWasteList(
+                        categoryName = categoryName,
+                        categoryId = categoryId
+                    )
                 )
-            )
-        }, onBackClick = { navController.navigateUp() })
+            },
+            onBackClick = { navController.navigateUp() })
     }
     composable<WasteList> { backStackEntry ->
         val wasteList = backStackEntry.toRoute<WasteList>()
         WasteListScreen(
             source = wasteList.source,
-            categoryId = wasteList.categoryId,
+            onBackClick = { navController.navigateUp() },
+            onNavigateToDetailWaste = { wasteId ->
+                navController.navigate(WasteDetails(wasteId = wasteId))
+            }
+        )
+    }
+
+    composable<CategorizedWasteList> { backStackEntry ->
+        val categorizedWasteList =
+            backStackEntry.toRoute<CategorizedWasteList>()
+        CategorizedWasteListScreen(
+            categoryName = categorizedWasteList.categoryName,
             onBackClick = { navController.navigateUp() },
             onNavigateToDetailWaste = { wasteId ->
                 navController.navigate(WasteDetails(wasteId = wasteId))
@@ -139,7 +179,7 @@ fun NavGraphBuilder.mainGraph(
             onNavigateToScan = { navController.navigate(ScanWaste) },
             onNavigateToHome = {
                 navController.navigate(Home) {
-                    popUpTo(Profile) {
+                    popUpTo(Home) {
                         inclusive = true
                     }
                 }
