@@ -41,8 +41,8 @@ fun HomeScreen(
     onNavigateToSearch: () -> Unit,
     onNavigateToCategory: () -> Unit,
     onNavigateToCategoryWasteList: (String, Int) -> Unit,
-    onNavigateToSuggestedWasteList: (String) -> Unit,
-    onNavigateToPopularWasteList: (String) -> Unit,
+    onNavigateToSuggestedWasteList: (String, Int) -> Unit,
+    onNavigateToPopularWasteList: (String, Int) -> Unit,
     onNavigateToDetailWaste: (Int) -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToScan: () -> Unit,
@@ -52,6 +52,7 @@ fun HomeScreen(
     val categoriesState by vm.categories.collectAsState()
     val suggestedWastesState by vm.suggestedWastes.collectAsState()
     val popularWastesState by vm.popularWastes.collectAsState()
+    val userId by vm.userId.collectAsState()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
@@ -59,8 +60,46 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         vm.getUserData()
         vm.getCategories()
-        vm.getDummySuggestedWastes()
-        vm.getDummyPopularWastes()
+        vm.getPopularWaste()
+    }
+    LaunchedEffect(userDataState) {
+        when(userDataState){
+            is UiState.Success ->   vm.getSuggestedWaste()
+            is UiState.Error -> {
+                val error = (userDataState as UiState.Error).error
+                if (error is AppError.Network) {
+                    showBottomSheet = true
+                }
+            }
+            else -> {}
+        }
+    }
+
+    LaunchedEffect(categoriesState) {
+        if (categoriesState is UiState.Error) {
+            val error = (categoriesState as UiState.Error).error
+            if (error is AppError.Network) {
+                showBottomSheet = true
+            }
+        }
+    }
+
+    LaunchedEffect(suggestedWastesState) {
+        if (suggestedWastesState is UiState.Error) {
+            val error = (suggestedWastesState as UiState.Error).error
+            if (error is AppError.Network) {
+                showBottomSheet = true
+            }
+        }
+    }
+
+    LaunchedEffect(popularWastesState) {
+        if (popularWastesState is UiState.Error) {
+            val error = (popularWastesState as UiState.Error).error
+            if (error is AppError.Network) {
+                showBottomSheet = true
+            }
+        }
     }
     Scaffold(
         bottomBar = {
@@ -79,6 +118,7 @@ fun HomeScreen(
             onRefresh = {
                 vm.getUserData()
                 vm.getCategories()
+                vm.getPopularWaste()
             },
             state = state,
             indicator = {
@@ -94,7 +134,6 @@ fun HomeScreen(
             LazyColumn(
                 verticalArrangement = spacedBy(24.dp),
                 modifier = Modifier
-//                .padding(innerPadding)
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
                 item {
@@ -110,18 +149,7 @@ fun HomeScreen(
                             )
                         }
 
-                        is UiState.Error -> {
-                            HeaderSectionSkeleton()
-                            val errorState =
-                                (userDataState as UiState.Error).error
-                            when (errorState) {
-                                is AppError.Network -> {
-                                    showBottomSheet = true
-                                }
-
-                                else -> {}
-                            }
-                        }
+                        is UiState.Error -> { HeaderSectionSkeleton() }
 
                         else -> {}
                     }
@@ -161,62 +189,51 @@ fun HomeScreen(
                                 onCategoriesClick = { onNavigateToCategory() },
                                 onCategoryCardClick = { categoryName, categoryId ->
                                     onNavigateToCategoryWasteList(
-                                        "$categoryName Category",
+                                        categoryName,
                                         categoryId
                                     )
                                 },
                             )
                         }
 
-                        is UiState.Error -> {
-                            CategorySectionSkeleton()
-                            val errorState =
-                                (categoriesState as UiState.Error).error
-                            when (errorState) {
-                                is AppError.Network -> {
-                                    showBottomSheet = true
-                                }
-
-                                else -> {}
-                            }
-                        }
+                        is UiState.Error -> { CategorySectionSkeleton() }
 
                         else -> {}
                     }
                 }
                 item {
-                    when (suggestedWastesState) {
-                        is Resource.Loading -> SuggestionSectionSkeleton()
-                        is Resource.Success -> {
-                            val suggestedWastes =
-                                (suggestedWastesState as Resource.Success).data
+                    when (suggestedWastesState){
+                        is UiState.Loading -> SuggestionSectionSkeleton()
+                        is UiState.Success->{
+                            val suggestedWastes = (suggestedWastesState as UiState.Success).data
                             SuggestedSection(
                                 suggestedWaste = suggestedWastes,
                                 onWasteCardClick = { onNavigateToDetailWaste(it) },
                                 onSuggestedClick = {
-                                    onNavigateToSuggestedWasteList("Suggested for You")
+                                    onNavigateToSuggestedWasteList("Suggested for You",userId )
                                 }
                             )
                         }
-
+                        is UiState.Empty -> {}
+                        is UiState.Error -> { SuggestionSectionSkeleton() }
                         else -> {}
                     }
                 }
                 item {
-                    when (popularWastesState) {
-                        is Resource.Loading -> PopularSectionSkeleton()
-                        is Resource.Success -> {
-                            val popularWastes =
-                                (popularWastesState as Resource.Success).data
+                    when (popularWastesState){
+                        is UiState.Loading ->  PopularSectionSkeleton()
+                        is UiState.Success->{
+                            val popularWastes = (popularWastesState as UiState.Success).data
                             PopularSection(
                                 popularWaste = popularWastes,
                                 onWasteCardClick = { onNavigateToDetailWaste(it) },
                                 onPopularClick = {
-                                    onNavigateToPopularWasteList("Popular Waste")
+                                    onNavigateToPopularWasteList("Popular Waste",userId)
                                 }
                             )
                         }
-
+                        is UiState.Empty -> {}
+                        is UiState.Error -> { PopularSectionSkeleton() }
                         else -> {}
                     }
                 }
@@ -226,6 +243,7 @@ fun HomeScreen(
                     onTryAgainClick = {
                         vm.getUserData()
                         vm.getCategories()
+                        vm.getPopularWaste()
                         showBottomSheet = false
                     },
                     onDismissRequest = { showBottomSheet = false }

@@ -54,7 +54,7 @@ fun CategoryCard(
     }
 }
 
-private const val BASE_URL = "http://192.168.100.73:8000/"
+private const val BASE_URL = "http://192.168.110.207:8000/"
 
 fun formatImageUrl(path: String?): String? {
     if (path.isNullOrEmpty()) return null

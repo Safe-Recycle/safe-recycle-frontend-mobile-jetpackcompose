@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.saferecycle.data.model.Category
 import com.example.saferecycle.data.model.Waste
+import com.example.saferecycle.data.model.WasteThumbnail
+import com.example.saferecycle.data.model.WasteThumbnailPopular
 import com.example.saferecycle.ui.component.BoldedText
 import com.example.saferecycle.ui.component.BoldedTextSkeleton
 import com.example.saferecycle.ui.component.CategoryCard
@@ -30,6 +32,7 @@ import com.example.saferecycle.ui.component.InitialCardSkeleton
 import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.WasteCard
+import com.example.saferecycle.ui.component.WasteCardPopular
 import com.example.saferecycle.ui.component.WasteCardSkeleton
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import com.example.saferecycle.ui.theme.fontFamily
@@ -174,7 +177,7 @@ fun CategorySectionSkeleton(
 fun SuggestedSection(
     onSuggestedClick: () -> Unit,
     onWasteCardClick: (Int) -> Unit,
-    suggestedWaste: List<Waste>
+    suggestedWaste: List<WasteThumbnail>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
         ListTitle(text = "Suggested for You", onClick = onSuggestedClick)
@@ -209,7 +212,7 @@ fun SuggestionSectionSkeleton(modifier: Modifier = Modifier) {
 fun PopularSection(
     onPopularClick: () -> Unit,
     onWasteCardClick: (Int) -> Unit,
-    popularWaste: List<Waste>
+    popularWaste: List<WasteThumbnail>
 ) {
     Column(verticalArrangement = spacedBy(16.dp)) {
         ListTitle(text = "Popular Waste", onClick = onPopularClick)

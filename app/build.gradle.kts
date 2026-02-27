@@ -77,14 +77,18 @@ dependencies {
 
     //hilt (dependency injection)
     implementation("com.google.dagger:hilt-android:2.59.1")
+    implementation(libs.androidx.material3)
     ksp("com.google.dagger:hilt-android-compiler:2.59.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    //ui control
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
     implementation(libs.androidx.compose.runtime)
 
+    //.md library
     implementation("com.github.jeziellago:compose-markdown:0.5.8")
 
+    //camera x
     val cameraxVersion = "1.6.0-beta01"
     // The following line is optional, as the core library is included indirectly by camera-camera2
     implementation("androidx.camera:camera-core:${cameraxVersion}")
@@ -95,6 +99,10 @@ dependencies {
     implementation("androidx.camera:camera-view:${cameraxVersion}")
     // If you want to additionally use the CameraX Extensions library
     implementation("androidx.camera:camera-extensions:${cameraxVersion}")
+
+    //list paging
+    implementation("androidx.paging:paging-runtime:3.2.1")
+    implementation("androidx.paging:paging-compose:3.2.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
