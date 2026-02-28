@@ -35,7 +35,6 @@ import com.example.saferecycle.ui.screen.AuthViewModel2
 
 @Composable
 fun CreateAccountScreen(
-    onNavigateToHome: () -> Unit,
     onBackClick: () -> Unit,
     vm: AuthViewModel2 = hiltViewModel()
 ) {

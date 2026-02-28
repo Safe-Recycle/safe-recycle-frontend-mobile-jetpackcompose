@@ -18,8 +18,6 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
@@ -46,6 +44,7 @@ import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import com.example.saferecycle.ui.theme.fontFamily
 import com.example.saferecycle.R
 import com.example.saferecycle.data.network.Resource
+import com.example.saferecycle.di.NetworkModule.formatImageUrl
 import com.example.saferecycle.ui.component.BoldedText
 import com.example.saferecycle.ui.component.BoldedTextSkeleton
 import com.example.saferecycle.ui.component.CategoryCardSkeleton
@@ -53,7 +52,6 @@ import com.example.saferecycle.ui.component.LostConnectionBottomSheet
 import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.SecondaryTextSkeleton
-import com.example.saferecycle.ui.component.formatImageUrl
 import com.example.saferecycle.ui.state.AppError
 import com.example.saferecycle.ui.state.UiState
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -62,7 +60,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WasteDetailsScreen(
-    wasteId: Int, onBackClick: () -> Unit,
+    onBackClick: () -> Unit,
     vm: WasteDetailsViewModel = hiltViewModel()
 ) {
     val wasteDetailsState by vm.wasteDetails.collectAsState()
@@ -71,7 +69,7 @@ fun WasteDetailsScreen(
 
 
     LaunchedEffect(Unit) {
-        vm.getWasteDetails(wasteId)
+        vm.getWasteDetails()
 //        vm.getWasteDetailsDummy()
     }
 
@@ -179,7 +177,7 @@ fun WasteDetailsScreen(
     if (showBottomSheet) {
         LostConnectionBottomSheet(
             onTryAgainClick = {
-                vm.getWasteDetails(wasteId)
+                vm.getWasteDetails()
                 showBottomSheet = false
             },
             onDismissRequest = { showBottomSheet = false }

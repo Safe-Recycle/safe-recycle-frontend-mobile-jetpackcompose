@@ -243,36 +243,3 @@ fun CameraOverlay(
             )
     }
 }
-//@Composable
-//fun CameraOverlay(
-//    cutoutWidth: Dp = 301.dp,
-//    cutoutHeight: Dp = 489.dp,
-//    cornerRadius: Dp = 16.dp
-//) {
-//
-//    Canvas(modifier = Modifier.fillMaxSize()) {
-//
-//        // Overlay gelap
-//        drawRect(
-//            color = Color.Black.copy(alpha = 0.5f)
-//        )
-//
-//        val widthPx = cutoutWidth.toPx()
-//        val heightPx = cutoutHeight.toPx()
-//
-//        val left = (size.width - widthPx) / 2f
-//        val top = 133.dp.toPx()
-//
-//        // Lubang transparan
-//        drawRoundRect(
-//            color = Color.Transparent,
-//            topLeft = Offset(left, top),
-//            size = Size(widthPx, heightPx),
-//            cornerRadius = CornerRadius(
-//                cornerRadius.toPx(),
-//                cornerRadius.toPx()
-//            ),
-//            blendMode = BlendMode.Clear
-//        )
-//    }
-//}

@@ -24,9 +24,7 @@ object Splash
 fun AppNavigation(
     vm: AuthViewModel2 = hiltViewModel(),
 ) {
-    //token null -> login else home
     val sessionState by vm.sessionState.collectAsState()
-//    val routeAfterSplash = if (vm.getToken() == null) Login else Home
     val navController = rememberNavController()
 
     LaunchedEffect(sessionState) {
@@ -45,13 +43,7 @@ fun AppNavigation(
         startDestination = Splash
     ) {
         composable<Splash> {
-            SplashScreen(
-                onNavigateToLoginOrHome = {
-//                    navController.navigate(routeAfterSplash) {
-//                        popUpTo(Splash) { inclusive = true }
-//                    }
-                },
-            )
+            SplashScreen()
         }
         mainGraph(navController = navController)
         authGraph(navController = navController)

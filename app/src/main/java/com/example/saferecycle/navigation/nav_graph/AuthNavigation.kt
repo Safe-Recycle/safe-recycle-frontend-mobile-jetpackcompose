@@ -31,25 +31,11 @@ fun NavGraphBuilder.authGraph(
 ) {
     composable<Login> {
         LoginScreen(
-            onNavigateToHome = {
-                navController.navigate(Home) {
-                    popUpTo(Login) {
-                        inclusive = true
-                    }
-                }
-            },
             onNavigateToCreateAccount = { navController.navigate(CreateAccount) }
         )
     }
     composable<CreateAccount> {
         CreateAccountScreen(
-            onNavigateToHome = {
-                navController.navigate(Home) {
-                    popUpTo(Login) {
-                        inclusive = true
-                    }
-                }
-            },
             onBackClick = { navController.navigateUp() })
     }
     composable<ChangePassword> {

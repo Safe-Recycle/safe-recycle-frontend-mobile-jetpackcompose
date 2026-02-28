@@ -26,7 +26,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.110.207:8000/api/"
+    const val BASE_URL = "http://192.168.110.207:8000/"
 
     @Provides
     @Singleton
@@ -143,5 +143,19 @@ object NetworkModule {
     fun provideHistoryApi(
         retrofit: Retrofit
     ): HistoryApiService = retrofit.create(HistoryApiService::class.java)
+
+
+    // ================= HELPER FUNCTION =================
+
+
+    fun formatImageUrl(path: String?): String? {
+        if (path.isNullOrEmpty()) return null
+
+        val formattedPath = path
+            .replace("\\", "/")        // ubah backslash jadi slash
+            .removePrefix("/")         // jaga-jaga kalau ada slash depan
+
+        return BASE_URL + formattedPath
+    }
 }
 

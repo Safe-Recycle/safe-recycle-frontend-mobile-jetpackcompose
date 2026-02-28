@@ -14,27 +14,6 @@ import javax.inject.Inject
 class CategoryRepository @Inject constructor(
     private val api: CategoryApiService,
 ): BaseRepository() {
-    suspend fun getDummyCategory(): Resource<List<Category>> {
-        return try {
-            Resource.Success(dummyCategories)
-            //val token = getToken() ?: ""
-            //val response = api.getCompanies(token = "Bearer $token")
-//            if (response.isSuccessful) {
-//                val body = response.body()
-//                if (body != null) {
-//                    Resource.Success(body)
-//                } else {
-//                    Resource.Error("Empty response body")
-//                }
-//            } else {
-//                Resource.Error("HTTP Error: ${response.code()}")
-//            }
-
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "Unknown error")
-        }
-    }
-
     suspend fun getCategories(): DataResult<List<Category>>{
         val result = safeApiCall { api.getCategories() }
         return result

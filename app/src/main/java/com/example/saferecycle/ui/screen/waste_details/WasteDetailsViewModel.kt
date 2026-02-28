@@ -27,17 +27,11 @@ class WasteDetailsViewModel @Inject constructor(
         MutableStateFlow<UiState<Waste>>(UiState.Idle)
     val wasteDetails = _wasteDetails
 
-//    suspend fun getWasteDetailsDummy() {
-//        _wasteDetails.value = Resource.Loading()
-//        delay(2000)
-//        _wasteDetails.value =
-//            wasteRepository.getWasteDetailsDummy(wasteDetailsArgs.wasteId)
-//    }
 
-    fun getWasteDetails(wasteId: Int) {
+    fun getWasteDetails() {
         _wasteDetails.value = UiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = wasteRepository.getWasteDetails(wasteId)) {
+            when (val result = wasteRepository.getWasteDetails(wasteDetailsArgs.wasteId)) {
                 is DataResult.Success -> _wasteDetails.value =
                     UiState.Success(result.data)
 

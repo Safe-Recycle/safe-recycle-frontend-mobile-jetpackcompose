@@ -9,7 +9,6 @@ import com.example.saferecycle.data.model.WasteThumbnail
 import com.example.saferecycle.data.model.WasteThumbnailPopular
 import com.example.saferecycle.data.network.DataResult
 import com.example.saferecycle.data.network.Resource
-import com.example.saferecycle.data.repository.AuthRepository
 import com.example.saferecycle.data.repository.CategoryRepository
 import com.example.saferecycle.data.repository.UserRepository
 import com.example.saferecycle.data.repository.WasteRepository
@@ -115,30 +114,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-//    fun getDummyCategories() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _categories.value = Resource.Loading()
-//            delay(2000)
-//            _categories.value = categoryRepository.getDummyCategory()
-//        }
-//    }
-
-//    fun getDummySuggestedWastes() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _suggestedWastes.value = Resource.Loading()
-//            delay(2000)
-//            _suggestedWastes.value = wasteRepository.getDummySuggestedWaste()
-//        }
-//    }
-//
-//    fun getDummyPopularWastes() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _popularWastes.value = Resource.Loading()
-//            delay(2000)
-//            _popularWastes.value = wasteRepository.getDummyPopularWaste()
-//        }
-//    }
 
     fun getInitials(name: String): String {
         return name
