@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel2 @Inject constructor(
     private val repository: AuthRepository2,
-    private val sessionManager: SessionManager
+    sessionManager: SessionManager
 ) : ViewModel() {
     val sessionState = sessionManager.sessionState
 

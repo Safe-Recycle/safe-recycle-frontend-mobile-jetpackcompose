@@ -1,7 +1,13 @@
 package com.example.saferecycle.ui.screen.scan_waste
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -29,12 +35,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.saferecycle.camera.CameraPreview
 import com.example.saferecycle.ui.component.LostConnectionBottomSheet
 import com.example.saferecycle.ui.component.NotIdentifiedBottomSheet
+import com.example.saferecycle.ui.component.PermissionDeniedBottomSheet
+import com.example.saferecycle.ui.component.PermissionRationaleBottomSheet
 import com.example.saferecycle.ui.component.TopBar
 import com.example.saferecycle.ui.state.AppError
 import com.example.saferecycle.ui.state.UiState
@@ -44,21 +55,68 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScanWasteScreen(
-    onNavigateToWasteDetailsScreen:(Int) -> Unit,
+    onNavigateToWasteDetailsScreen: (Int) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     vm: ScanWasteViewModel = hiltViewModel()
 ) {
+
     val scanWasteState by vm.scanWasteState.collectAsState()
+
+    val context = LocalContext.current
+    val activity = context as Activity
+    val cameraPermission = Manifest.permission.CAMERA
 
     val applicationContext = LocalContext.current
     var showNoInternetBottomSheet by remember { mutableStateOf(false) }
     var showNotIdentifiedBottomSheet by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    val context = LocalContext.current
+    var showPermissionDeniedBottomSheet by remember { mutableStateOf(false) }
+    var showPermissionRationaleBottomSheet by remember { mutableStateOf(false) }
+
+    var hasPermission by remember {
+        mutableStateOf(
+            checkSelfPermission(
+                context,
+                cameraPermission
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+
+        hasPermission = granted
+
+        if (!granted) {
+
+            val shouldShowRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    cameraPermission
+                )
+
+            if (shouldShowRationale) {
+                // Denial pertama
+                showPermissionRationaleBottomSheet =
+                    true // tampilkan bottomsheet edukasi
+            } else {
+                // Don't ask again
+                showPermissionDeniedBottomSheet = true // bottomsheet versi "Go to Settings"
+                showPermissionRationaleBottomSheet = false
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasPermission) {
+            permissionLauncher.launch(cameraPermission)
+        }
+    }
 
     var isFlashOn by remember { mutableStateOf(false) }
     val controller = remember {
@@ -77,38 +135,42 @@ fun ScanWasteScreen(
         }
     )
 
+
     LaunchedEffect(selectedImageUri) {
-        if (selectedImageUri!=null){
-            val multipart = selectedImageUri!!.toMultipart(applicationContext, "file")
+        if (selectedImageUri != null) {
+            val multipart =
+                selectedImageUri!!.toMultipart(applicationContext, "file")
             vm.scanWaste(multipart)
         }
     }
 
     LaunchedEffect(scanWasteState) {
-        when(scanWasteState){
+        when (scanWasteState) {
             is UiState.Success -> {
                 val data = (scanWasteState as UiState.Success).data
                 onNavigateToWasteDetailsScreen(data.id!!)
                 vm.clearState()
-                Log.d("SCAN SUCCESS","${data.id}")
+                Log.d("SCAN SUCCESS", "${data.id}")
             }
 
             is UiState.Error -> {
                 selectedImageUri = null
                 val error = (scanWasteState as UiState.Error).error
-                when(error){
+                when (error) {
                     is AppError.Network -> showNoInternetBottomSheet = true
-                    is AppError.NotFound-> showNotIdentifiedBottomSheet = true
+                    is AppError.NotFound -> showNotIdentifiedBottomSheet = true
                     else -> {
                         showNotIdentifiedBottomSheet = true
 
                     }
                 }
             }
+
             is UiState.Loading -> {}
             else -> {}
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -124,7 +186,7 @@ fun ScanWasteScreen(
 
         }
 
-    ) { innerPadding ->
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -188,6 +250,25 @@ fun ScanWasteScreen(
         NotIdentifiedBottomSheet(
             onTryAgainClick = { showNotIdentifiedBottomSheet = false },
             onDismissRequest = { showNotIdentifiedBottomSheet = false }
+        )
+    }
+    if (showPermissionDeniedBottomSheet) {
+        PermissionDeniedBottomSheet(
+            onGoToSettingsClick = {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", context.packageName, null)
+                )
+                context.startActivity(intent)
+            },
+            onDismissRequest = { showPermissionDeniedBottomSheet = false },
+        )
+    }
+
+    if (showPermissionRationaleBottomSheet) {
+        PermissionRationaleBottomSheet(
+            onDisplayRationale = { permissionLauncher.launch(cameraPermission) },
+            onDismissRequest = { showPermissionRationaleBottomSheet = false },
         )
     }
 }

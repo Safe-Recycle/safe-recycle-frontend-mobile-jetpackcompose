@@ -7,12 +7,16 @@ import com.example.saferecycle.data.model.WasteThumbnailPopular
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface HistoryApiService {
-    @GET("history/popular")
-    suspend fun getPopularWaste(): Response<BaseResponse<List<WasteThumbnailPopular>>>
+    @GET("api/history/popular")
+    suspend fun getPopularWaste(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): Response<BaseResponse<List<WasteThumbnailPopular>>>
 
-    @GET("history/recommendation/{userId}")
+    @GET("api/history/recommendation/{userId}")
     suspend fun getSuggestedWaste(
         @Path("userId") userId: Int,
     ): Response<BaseResponse<List<WasteThumbnail>>>

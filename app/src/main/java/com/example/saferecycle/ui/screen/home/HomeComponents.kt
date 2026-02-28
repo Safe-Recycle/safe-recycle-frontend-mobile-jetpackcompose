@@ -32,7 +32,6 @@ import com.example.saferecycle.ui.component.InitialCardSkeleton
 import com.example.saferecycle.ui.component.NormalText
 import com.example.saferecycle.ui.component.NormalTextSkeleton
 import com.example.saferecycle.ui.component.WasteCard
-import com.example.saferecycle.ui.component.WasteCardPopular
 import com.example.saferecycle.ui.component.WasteCardSkeleton
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 import com.example.saferecycle.ui.theme.fontFamily

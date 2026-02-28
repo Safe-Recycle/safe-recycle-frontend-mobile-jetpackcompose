@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.saferecycle.data.model.Category
+import com.example.saferecycle.di.NetworkModule.BASE_URL
+import com.example.saferecycle.di.NetworkModule.formatImageUrl
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 
 @Composable
@@ -52,16 +54,4 @@ fun CategoryCard(
         }
         NormalText(text = category.name)
     }
-}
-
-private const val BASE_URL = "http://192.168.110.207:8000/"
-
-fun formatImageUrl(path: String?): String? {
-    if (path.isNullOrEmpty()) return null
-
-    val formattedPath = path
-        .replace("\\", "/")        // ubah backslash jadi slash
-        .removePrefix("/")         // jaga-jaga kalau ada slash depan
-
-    return BASE_URL + formattedPath
 }

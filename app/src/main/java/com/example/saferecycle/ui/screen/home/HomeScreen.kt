@@ -24,11 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.saferecycle.data.dummyWastes
 import com.example.saferecycle.ui.component.SafeRecycleBottomNavBar
 import com.example.saferecycle.ui.component.SearchField
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.ui.component.LostConnectionBottomSheet
 import com.example.saferecycle.ui.component.SearchFieldSkeleton
 import com.example.saferecycle.ui.state.AppError

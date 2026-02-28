@@ -11,13 +11,13 @@ import retrofit2.http.Part
 
 interface ScanApiService {
     @Multipart
-    @POST("llm/check")
+    @POST("api/llm/check")
     suspend fun checkWaste(
         @Part file : MultipartBody.Part
     ): Response<BaseResponse<ScanWasteResponse>>
 
     @Multipart
-    @POST("llm/process")
+    @POST("api/llm/process")
     suspend fun processWaste(
         @Part file : MultipartBody.Part
     ): Response<BaseResponse<ScanWasteResponse>>

@@ -10,12 +10,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WasteApiService {
-    @GET("items/{wasteId}")
+    @GET("api/items/{wasteId}")
     suspend fun getWasteDetails(
         @Path("wasteId") userId: Int,
     ): Response<BaseResponse<Waste>>
 
-    @GET("items")
+    @GET("api/items")
     suspend fun getWasteList(
         @Query("name") name: String?,
         @Query("category") category: Int?,

@@ -20,17 +20,6 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
-    //    private val _categories =
-//        MutableStateFlow<Resource<List<Category>>>(Resource.Idle())
-//    val categories = _categories
-//
-//    fun getDummyCategories() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _categories.value = Resource.Loading()
-//            delay(2000)
-//            _categories.value = categoryRepository.getDummyCategory()
-//        }
-//    }
     private val _categories =
         MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
     val categories = _categories

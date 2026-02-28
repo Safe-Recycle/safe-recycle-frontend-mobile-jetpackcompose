@@ -32,7 +32,6 @@ fun ProfileScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToScan: () -> Unit,
     onNavigateToChangePassword: (Int) -> Unit,
-    onNavigateToLogin: () -> Unit,
     authViewModel2: AuthViewModel2 = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {

@@ -26,7 +26,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    onNavigateToLoginOrHome: () -> Unit
 ) {
     val colors = LocalSafeRecycleColors.current
 
@@ -43,8 +42,6 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         delay(1200)
-        delay(10)
-        onNavigateToLoginOrHome()
     }
 
     Box(

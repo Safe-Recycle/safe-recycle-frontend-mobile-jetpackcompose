@@ -37,8 +37,6 @@ import com.example.saferecycle.ui.theme.SafeRecycleTheme
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit,
     onNavigateToCreateAccount: () -> Unit,
     vm: AuthViewModel2 = hiltViewModel()
 ) {
