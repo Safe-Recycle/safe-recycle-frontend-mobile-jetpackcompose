@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.saferecycle.capitalizeWords
 import com.example.saferecycle.data.model.Category
-import com.example.saferecycle.di.NetworkModule.BASE_URL
 import com.example.saferecycle.di.NetworkModule.formatImageUrl
 import com.example.saferecycle.ui.theme.SafeRecycleTheme
 
@@ -48,10 +48,10 @@ fun CategoryCard(
         ) {
             AsyncImage(
                 model = formatImageUrl(category.imageLink),
-                contentDescription = "${category.name} Logo",
+                contentDescription = "${capitalizeWords(category.name)} Logo",
                 modifier = Modifier.size(42.dp)
             )
         }
-        NormalText(text = category.name)
+        NormalText(text = capitalizeWords(category.name))
     }
 }

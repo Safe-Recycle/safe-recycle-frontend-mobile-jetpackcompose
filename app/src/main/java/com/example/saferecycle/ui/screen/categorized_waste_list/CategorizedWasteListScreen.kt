@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.saferecycle.capitalizeWords
 import com.example.saferecycle.ui.component.EmptyListIndicator
 import com.example.saferecycle.ui.component.LostConnectionBottomSheet
 import com.example.saferecycle.ui.component.TopBar
@@ -47,6 +50,9 @@ fun CategorizedWasteListScreen(
 
     var isUserRefreshing by remember { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+
+
     LaunchedEffect(refreshState) {
         if (refreshState is LoadState.NotLoading ||
             refreshState is LoadState.Error
@@ -66,7 +72,7 @@ fun CategorizedWasteListScreen(
     Scaffold(
         topBar = {
             TopBar(
-                text = "$categoryName Category",
+                text = "${capitalizeWords(categoryName)} Category",
                 onBackClick = { onBackClick() })
         }
     ) { innerPadding ->
@@ -96,13 +102,20 @@ fun CategorizedWasteListScreen(
                 if (refreshState is LoadState.NotLoading &&
                     lazyPagingItems.itemCount == 0
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState),
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        EmptyListIndicator(
-                            text = "Currently, there is no recorded waste\ncategorized here yet"
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyListIndicator(
+                                text = "Currently, there is no recorded waste\ncategorized here yet"
+                            )
+                        }
                     }
                 } else {
 

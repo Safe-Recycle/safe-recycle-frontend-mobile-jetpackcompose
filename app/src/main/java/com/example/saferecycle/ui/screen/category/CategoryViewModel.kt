@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository,
+    private val categoryRepository:     CategoryRepository,
 ) : ViewModel() {
     private val _categories =
         MutableStateFlow<UiState<List<Category>>>(UiState.Idle)
