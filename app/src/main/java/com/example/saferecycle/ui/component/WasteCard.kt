@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.saferecycle.data.model.Waste
@@ -39,7 +40,7 @@ fun WasteCard(waste: WasteThumbnail, onClick: () -> Unit) {
             contentScale = ContentScale.Crop
         )
         Column {
-            NormalText(text = waste.name)
+            NormalText(text = waste.name, textAlign = TextAlign.Left)
             SecondaryText(text = waste.categoryName)
         }
     }

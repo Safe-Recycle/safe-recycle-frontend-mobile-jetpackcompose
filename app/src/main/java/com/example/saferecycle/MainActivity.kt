@@ -18,32 +18,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-//        if (!hasRequiredPermission()) {
-//            ActivityCompat.requestPermissions(
-//                this, CAMERAX_PERMISSION, 0
-//            )
-//        }
         setContent {
-
             SafeRecycleTheme {
                 AppNavigation()
             }
         }
     }
+}
 
-//    private fun hasRequiredPermission(): Boolean {
-//        return CAMERAX_PERMISSION.all {
-//            ContextCompat.checkSelfPermission(
-//                applicationContext,
-//                it
-//            ) == PackageManager.PERMISSION_GRANTED
-//        }
-//
-//    }
-//
-//    companion object {
-//        private val CAMERAX_PERMISSION = arrayOf(
-//            Manifest.permission.CAMERA,
-//        )
-//    }
+
+fun capitalizeWords(text: String): String {
+    return text
+        .split(" ")
+        .joinToString(" ") { word ->
+            word.replaceFirstChar { it.uppercase() }
+        }
 }

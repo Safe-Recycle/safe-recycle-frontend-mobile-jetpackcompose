@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import com.example.saferecycle.data.dummyCategories
 import com.example.saferecycle.data.network.Resource
 import com.example.saferecycle.ui.component.CategoryCard
@@ -44,6 +45,15 @@ fun CategoryScreen(
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
+
+    var isUserRefreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(categoriesState) {
+        if (categoriesState is UiState.Idle ||
+            categoriesState is UiState.Error
+        ) {
+            isUserRefreshing = false
+        }
+    }
 
     LaunchedEffect(Unit) {
 //        vm.getDummyCategories()

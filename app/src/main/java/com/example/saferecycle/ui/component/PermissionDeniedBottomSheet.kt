@@ -50,7 +50,7 @@ fun PermissionDeniedBottomSheet(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BoldedText("Camera permissions are needed")
-                NormalText(text = "This feature requires camera access to work properly. Please allow camera permission to continue or pick a waste item from your gallery")
+                NormalText(text = "This feature requires camera access to work properly. Please allow camera permission to continue or pick a waste item from your gallery. Please note that every photo taken will be saved and cannot be deleted.")
             }
             NormalButton(onClick = { onGoToSettingsClick() }, text = "Go to Settings")
         }
@@ -89,7 +89,7 @@ fun PermissionRationaleBottomSheet(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BoldedText("Camera permissions are needed")
-                NormalText(text = "This feature requires camera access to work properly. Please allow camera permission to continue or pick a waste item from your gallery")
+                NormalText(text = "This feature requires camera access to work properly. Please allow camera permission to continue or pick a waste item from your gallery. Please note that every photo taken will be saved and cannot be deleted.")
             }
             NormalButton(onClick = { onDisplayRationale() }, text = "Grant Permission")
         }

@@ -204,9 +204,17 @@ private fun SheetContent(waste: Waste) {
                 BoldedText(text = waste.name)
             }
             item {
-                NormalText(
-                    text = waste.description,
-                    textAlign = TextAlign.Start
+//                NormalText(
+//                    text = waste.description,
+//                    textAlign = TextAlign.Start
+//                )
+                MarkdownText(
+                    markdown = waste.description.trimIndent(),
+                    style = TextStyle(
+                        fontFamily = fontFamily,
+                        fontSize = 14.sp,
+                        letterSpacing = 16.sp
+                    )
                 )
             }
             item {
